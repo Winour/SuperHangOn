@@ -14,6 +14,7 @@ class ModuleFadeToBlack;
 class ModuleCollision;
 class ModuleParticles;
 
+class ModuleSceneIntro;
 
 class Application
 {
@@ -35,6 +36,8 @@ public:
 	ModuleFadeToBlack* fade;
 	ModuleCollision* collision;
 	ModuleParticles* particles;
+
+    ModuleSceneIntro* sceneIntro;
 
 private:
 
