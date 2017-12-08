@@ -6,6 +6,7 @@
 #include "ModuleCollision.h"
 #include "ModuleParticles.h"
 #include "ModuleSceneIntro.h"
+#include "ModuleFadeToBlack.h"
 
 
 
@@ -41,7 +42,7 @@ bool ModuleSceneIntro::Start() {
 update_status ModuleSceneIntro::Update() {
 
     if (currentAnim->Finished()) {
-        //Here to go to the next scene
+        App->fade->FadeToBlack();
     }
     App->renderer->Blit(segaIntro, position.x, position.y, &(currentAnim->GetCurrentFrame()));
 

@@ -15,6 +15,7 @@ class ModuleCollision;
 class ModuleParticles;
 
 class ModuleSceneIntro;
+class ModuleSceneNewGame;
 
 class Application
 {
@@ -38,6 +39,7 @@ public:
 	ModuleParticles* particles;
 
     ModuleSceneIntro* sceneIntro;
+    ModuleSceneNewGame* sceneNewGame;
 
 private:
 
