@@ -6,7 +6,7 @@
 #include "Animation.h"
 #include "Point.h"
 
-struct SDL_Texture;
+//struct SDL_Texture;
 
 class ModuleSceneIntro : public Module {
 public:
@@ -18,7 +18,7 @@ public:
     bool CleanUp();
 
 public:
-    SDL_Texture * segaIntro = nullptr;
+    SDL_Texture* segaIntro = nullptr;
     Animation anim;
     iPoint position;
 };
