@@ -42,7 +42,7 @@ bool ModuleSceneIntro::Start() {
 update_status ModuleSceneIntro::Update() {
 
     if (currentAnim->Finished()) {
-        App->fade->FadeToBlack();
+        //App->fade->FadeToBlack();
     }
     App->renderer->Blit(segaIntro, position.x, position.y, &(currentAnim->GetCurrentFrame()));
 
