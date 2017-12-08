@@ -22,6 +22,7 @@ public:
 
     SDL_Texture* hangOnTitle = nullptr;
     Animation logoAnim;
+    Animation logoAnimLoop;
     iPoint titlePos;
 
     SDL_Texture* segaLogo = nullptr;
@@ -29,13 +30,15 @@ public:
     iPoint logoPos;
 
     SDL_Texture* options = nullptr;
-    SDL_Rect backgroundOptions;
-    SDL_Rect backgroundOptionsTwo;
+    SDL_Rect optionsOne;
+    SDL_Rect optionsTwo;
     SDL_Rect copyRightSaga;
     Animation pointer;
-    //iPoint pointerPos;
-    //iPoint pointerPos;
+    iPoint optionsOnePos;
+    iPoint optionsTwoPos;
+    iPoint copyRightPos;
     iPoint pointerPos;
+
     bool firstSelection = true;
 };
 
