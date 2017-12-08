@@ -19,7 +19,6 @@ public:
 
 public:
     SDL_Texture * segaIntro = nullptr;
-    Animation* currentAnim;
     Animation anim;
     iPoint position;
 };

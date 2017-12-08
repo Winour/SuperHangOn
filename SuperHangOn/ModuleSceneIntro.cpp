@@ -30,10 +30,9 @@ bool ModuleSceneIntro::Start() {
 
     LOG("Loading Intro scene");
 
-    currentAnim = &anim;
     segaIntro = App->textures->Load("sprites/segaLogo.bmp");
-    position.x = (SCREEN_WIDTH/2) - (currentAnim->GetCurrentFrame().w/2);
-    position.y = (SCREEN_HEIGHT/2) - (currentAnim->GetCurrentFrame().h/2);
+    position.x = (SCREEN_WIDTH/2) - (anim.GetCurrentFrame().w/2);
+    position.y = (SCREEN_HEIGHT/2) - (anim.GetCurrentFrame().h/2);
     App->renderer->camera.x = App->renderer->camera.y = 0;
 
     return true;
@@ -41,10 +40,10 @@ bool ModuleSceneIntro::Start() {
 
 update_status ModuleSceneIntro::Update() {
 
-    if (currentAnim->Finished()) {
-        //App->fade->FadeToBlack();
+    if (anim.Finished()) {
+        App->fade->FadeToBlack((Module*)App->sceneNewGame,this,4.0f);
     }
-    App->renderer->Blit(segaIntro, position.x, position.y, &(currentAnim->GetCurrentFrame()));
+    App->renderer->Blit(segaIntro, position.x, position.y, &(anim.GetCurrentFrame()));
 
     return UPDATE_CONTINUE;
 }
