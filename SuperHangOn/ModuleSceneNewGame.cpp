@@ -6,6 +6,8 @@
 #include "ModuleCollision.h"
 #include "ModuleParticles.h"
 #include "ModuleSceneNewGame.h"
+#include "ModuleInput.h"
+#include "ModuleFadeToBlack.h"
 
 
 
@@ -28,16 +30,39 @@ ModuleSceneNewGame::ModuleSceneNewGame(bool active) : Module(active) {
         }
     }
 
+    j = 0;
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 3; j++) {
+            segaLogoAnim.frames.push_back({ j * 640 , i * 53 , 640 , 53 });
+        }
+    }
 
     logoAnim.loop = false;
     logoAnim.speed = 0.2f;
     logoAnimLoop.loop = true;
     logoAnimLoop.speed = 0.12f;
+    segaLogoAnim.loop = true;
+    segaLogoAnim.speed = 0.3f;
+
+    pointer.frames.push_back({ 0, 68, 16, 16 });
+    pointer.frames.push_back({ 0, 48, 16, 16 });
+    pointer.loop = true;
+    pointer.speed = 0.05f;
 
     optionsOne.x = 0;
     optionsOne.y = 0;
     optionsOne.w = 640;
     optionsOne.h = 48;
+
+    optionsTwo.x = 0;
+    optionsTwo.y = 84;
+    optionsTwo.w = 640;
+    optionsTwo.h = 48;
+
+    copyRight.x = 0;
+    copyRight.y = 48;
+    copyRight.w = 640;
+    copyRight.h = 20;
 
 }
 
@@ -46,24 +71,68 @@ ModuleSceneNewGame::~ModuleSceneNewGame() {
 }
 
 bool ModuleSceneNewGame::Start() {
-    options = App->textures->Load("sprites/MenuOneOptions.bmp");
-    hangOnTitle = App->textures->Load("sprites/superHangOnLogo.bmp");
+    textureOptions = App->textures->Load("sprites/MenuOneOptions.bmp");
+    textureHangOnTitle = App->textures->Load("sprites/superHangOnLogo.bmp");
+    textureSegaLogo = App->textures->Load("sprites/segaLogoMenuOne.bmp");
+
 
     optionsOnePos.x = (SCREEN_WIDTH / 2) - (optionsOne.w / 2);
     optionsOnePos.y = (SCREEN_HEIGHT / 2) + (optionsOne.h);
+    optionsTwoPos.x = (SCREEN_WIDTH / 2) - (optionsTwo.w / 2);
+    optionsTwoPos.y = (SCREEN_HEIGHT / 2) + (optionsTwo.h);
     titlePos.x = (SCREEN_WIDTH / 2) - (logoAnim.GetCurrentFrame().w / 2);
     titlePos.y = 0;
+    copyRightPos.x = (SCREEN_WIDTH / 8);
+    copyRightPos.y = (SCREEN_HEIGHT * 8 / 9);
+    logoPos.x = (SCREEN_WIDTH / 2) - (segaLogoAnim.GetCurrentFrame().w / 2);
+    logoPos.y = (SCREEN_HEIGHT * 7 / 9);
 
     return true;
 }
 
 update_status ModuleSceneNewGame::Update() {
-    App->renderer->Blit(options, optionsOnePos.x, optionsOnePos.y, &optionsOne);
-    if (logoAnim.Finished() == false) {
-        App->renderer->Blit(hangOnTitle, titlePos.x, titlePos.y, &(logoAnim.GetCurrentFrame()));
-    } else {
-        App->renderer->Blit(hangOnTitle, titlePos.x, titlePos.y, &(logoAnimLoop.GetCurrentFrame()));
+    if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN) {
+        firstSelection = !firstSelection;
     }
+    if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN && firstSelection) {
+        if (firstMenu) {
+            firstMenu = false;
+        } else {
+            //App->fade->FadeToBlack((Module*)App->sceneToGo, this, 0.0f);
+        }
+    }
+    if (logoAnim.Finished() == false) {
+        App->renderer->Blit(textureHangOnTitle, titlePos.x, titlePos.y, &(logoAnim.GetCurrentFrame()), 0.0f);
+    } else {
+        App->renderer->Blit(textureHangOnTitle, titlePos.x, titlePos.y, &(logoAnimLoop.GetCurrentFrame()), 0.0f);
+    }
+    if (firstMenu) {
+        App->renderer->Blit(textureOptions, optionsOnePos.x, optionsOnePos.y, &optionsOne, 0.0f);
+    } else {
+        App->renderer->Blit(textureOptions, optionsTwoPos.x, optionsTwoPos.y, &optionsTwo, 0.0f);
+    }
+
+    App->renderer->Blit(textureSegaLogo, logoPos.x, logoPos.y, &(segaLogoAnim.GetCurrentFrame()), 0.0f);
+    App->renderer->Blit(textureOptions, copyRightPos.x, copyRightPos.y, &copyRight, 0.0f);
+    if (firstMenu) {
+        if (firstSelection) {
+            pointerPos.x = (optionsOne.w * 3 / 7);
+            pointerPos.y = (SCREEN_HEIGHT / 2) + (optionsOne.h);
+        } else {
+            pointerPos.x = (optionsOne.w * 3 / 7);
+            pointerPos.y = (SCREEN_HEIGHT / 2) + (optionsOne.h * 5 / 3);
+        }
+    } else {
+        if (firstSelection) {
+            pointerPos.x = (optionsOne.w / 2) - 95;
+            pointerPos.y = (SCREEN_HEIGHT / 2) + (optionsOne.h);
+        } else {
+            pointerPos.x = (optionsOne.w / 2) - 95;
+            pointerPos.y = (SCREEN_HEIGHT / 2) + (optionsOne.h * 5 / 3);
+        }
+    }
+    App->renderer->Blit(textureOptions, pointerPos.x, pointerPos.y, &(pointer.GetCurrentFrame()), 0.0f);
+
     return UPDATE_CONTINUE;
 }
 

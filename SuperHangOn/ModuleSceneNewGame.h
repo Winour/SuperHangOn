@@ -20,19 +20,19 @@ public:
 
 public:
 
-    SDL_Texture* hangOnTitle = nullptr;
+    SDL_Texture* textureHangOnTitle = nullptr;
     Animation logoAnim;
     Animation logoAnimLoop;
     iPoint titlePos;
 
-    SDL_Texture* segaLogo = nullptr;
+    SDL_Texture* textureSegaLogo = nullptr;
     Animation segaLogoAnim;
     iPoint logoPos;
 
-    SDL_Texture* options = nullptr;
+    SDL_Texture* textureOptions = nullptr;
     SDL_Rect optionsOne;
     SDL_Rect optionsTwo;
-    SDL_Rect copyRightSaga;
+    SDL_Rect copyRight;
     Animation pointer;
     iPoint optionsOnePos;
     iPoint optionsTwoPos;
@@ -40,6 +40,7 @@ public:
     iPoint pointerPos;
 
     bool firstSelection = true;
+    bool firstMenu = true;
 };
 
 #endif // !__MODULESCENENEWGAME_H_

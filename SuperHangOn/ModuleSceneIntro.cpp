@@ -41,8 +41,8 @@ bool ModuleSceneIntro::Start() {
 
 update_status ModuleSceneIntro::Update() {
 
-    if (anim.Finished() || App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN) {
-         App->fade->FadeToBlack((Module*)App->sceneNewGame,this,0.0f);
+    if ((anim.Finished() || App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN) && App->fade->isFading() == false) {
+         App->fade->FadeToBlack((Module*)App->sceneNewGame, this, 0.5f);
     }
 
     App->renderer->Blit(segaIntro, position.x, position.y, &(anim.GetCurrentFrame()));
