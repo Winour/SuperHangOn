@@ -40,9 +40,10 @@ public:
 
     SDL_Rect textPushStart;
     SDL_Rect textSelectClass;
+    Animation countdown;
 
     iPoint africaPos, europePos, americaPos, asiaPos;
-    iPoint texteEuropePos, textAfricaPos, textAsiaPos, textAmericaPos, textPushStartPos, textSelectClassPos;
+    iPoint textEuropePos, textAfricaPos, textAsiaPos, textAmericaPos, textPushStartPos, textSelectClassPos, countdownPos;
     uint music = 0;
 
 };

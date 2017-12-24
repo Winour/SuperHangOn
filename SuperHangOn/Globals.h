@@ -48,6 +48,8 @@ typedef unsigned int uint;
 #define SCREEN_HEIGHT 450
 #define FULLSCREEN false
 #define VSYNC true
-#define TITLE "Super Awesome Game"
+#define TITLE "Super Hang-On"
+#define BLINK_SLOW 0.2
+#define BLINK_FAST 0.6
 
 #endif //__GLOBALS_H__
