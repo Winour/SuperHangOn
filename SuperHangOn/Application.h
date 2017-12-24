@@ -16,6 +16,7 @@ class ModuleParticles;
 
 class ModuleSceneIntro;
 class ModuleSceneNewGame;
+class ModuleSceneMapSelection;
 
 class Application
 {
@@ -40,6 +41,7 @@ public:
 
     ModuleSceneIntro* sceneIntro;
     ModuleSceneNewGame* sceneNewGame;
+    ModuleSceneMapSelection* sceneMapSelection;
 
 private:
 

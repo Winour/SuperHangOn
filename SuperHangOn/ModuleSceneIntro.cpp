@@ -28,9 +28,7 @@ ModuleSceneIntro::~ModuleSceneIntro() {
 }
 
 bool ModuleSceneIntro::Start() {
-
-    LOG("Loading Intro scene");
-
+    App->renderer->camera.x = App->renderer->camera.y = 0;
     segaIntro = App->textures->Load("sprites/segaLogo.bmp");
     position.x = (SCREEN_WIDTH/2) - (anim.GetCurrentFrame().w/2);
     position.y = (SCREEN_HEIGHT/2) - (anim.GetCurrentFrame().h/2);

@@ -12,7 +12,6 @@
 
 
 
-
 ModuleSceneNewGame::ModuleSceneNewGame(bool active) : Module(active) {
 
     int j = 0;
@@ -21,6 +20,9 @@ ModuleSceneNewGame::ModuleSceneNewGame(bool active) : Module(active) {
             logoAnim.frames.push_back({ j * 640 , i * 185 , 640 , 190 });
         }
     }
+    logoAnim.loop = false;
+    logoAnim.speed = 0.2f;
+
     for (int i = 8; i < 11; i++) {
         for (int j = 0; j < 3; j++) {
             logoAnimLoop.frames.push_back({ j * 640 , i * 185 , 640 , 190 });
@@ -31,6 +33,8 @@ ModuleSceneNewGame::ModuleSceneNewGame(bool active) : Module(active) {
             logoAnimLoop.frames.push_back({ j * 640 , i * 185 - 1 , 640 , 190 });
         }
     }
+    logoAnimLoop.loop = true;
+    logoAnimLoop.speed = 0.12f;
 
     j = 0;
     for (int i = 0; i < 5; i++) {
@@ -38,11 +42,6 @@ ModuleSceneNewGame::ModuleSceneNewGame(bool active) : Module(active) {
             segaLogoAnim.frames.push_back({ j * 640 , i * 53 , 640 , 53 });
         }
     }
-
-    logoAnim.loop = false;
-    logoAnim.speed = 0.2f;
-    logoAnimLoop.loop = true;
-    logoAnimLoop.speed = 0.12f;
     segaLogoAnim.loop = true;
     segaLogoAnim.speed = 0.3f;
 
@@ -51,21 +50,9 @@ ModuleSceneNewGame::ModuleSceneNewGame(bool active) : Module(active) {
     pointer.loop = true;
     pointer.speed = 0.05f;
 
-    optionsOne.x = 0;
-    optionsOne.y = 0;
-    optionsOne.w = 640;
-    optionsOne.h = 48;
-
-    optionsTwo.x = 0;
-    optionsTwo.y = 84;
-    optionsTwo.w = 640;
-    optionsTwo.h = 48;
-
-    copyRight.x = 0;
-    copyRight.y = 48;
-    copyRight.w = 640;
-    copyRight.h = 20;
-
+    optionsOne = { 0 , 0 , 640 , 48 };
+    optionsTwo = { 0 , 84 , 640 , 48 };
+    copyRight = { 0 , 48 , 640 , 20 };
 }
 
 
@@ -73,10 +60,11 @@ ModuleSceneNewGame::~ModuleSceneNewGame() {
 }
 
 bool ModuleSceneNewGame::Start() {
+    App->renderer->camera.x = App->renderer->camera.y = 0;
+
     textureOptions = App->textures->Load("sprites/MenuOneOptions.bmp");
     textureHangOnTitle = App->textures->Load("sprites/superHangOnLogo.bmp");
     textureSegaLogo = App->textures->Load("sprites/segaLogoMenuOne.bmp");
-
 
     optionsOnePos.x = (SCREEN_WIDTH / 2) - (optionsOne.w / 2);
     optionsOnePos.y = (SCREEN_HEIGHT / 2) + (optionsOne.h);
@@ -100,7 +88,7 @@ update_status ModuleSceneNewGame::Update() {
         if (firstMenu) {
             firstMenu = false;
         } else {
-            //App->fade->FadeToBlack((Module*)App->sceneToGo, this, 0.0f);
+            App->fade->FadeToBlack((Module*)App->sceneMapSelection, this, 0.5f);
         }
     }
     if (logoAnim.Finished() == false) {

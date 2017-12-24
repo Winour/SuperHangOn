@@ -10,6 +10,7 @@
 
 #include "ModuleSceneIntro.h"
 #include "ModuleSceneNewGame.h"
+#include "ModuleSceneMapSelection.h"
 
 
 using namespace std;
@@ -27,6 +28,8 @@ Application::Application()
 	// Game Modules
     modules.push_back(sceneIntro = new ModuleSceneIntro(false));
     modules.push_back(sceneNewGame = new ModuleSceneNewGame(false));
+    modules.push_back(sceneMapSelection = new ModuleSceneMapSelection(false));
+
 
 	// Modules to draw on top of game logic
 	//modules.push_back(collision = new ModuleCollision());
@@ -88,4 +91,3 @@ bool Application::CleanUp()
 
 	return ret;
 }
-
