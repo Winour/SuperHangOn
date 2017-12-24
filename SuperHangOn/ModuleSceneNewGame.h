@@ -1,10 +1,11 @@
-#ifndef __MODULESCENENEWGAME_H_
-#define __MODULESCENENEWGAME_H_
+#ifndef __MODULESCENENEWGAME_H__
+#define __MODULESCENENEWGAME_H__
 
 #include "Module.h"
 #include "Globals.h"
-#include "Animation.h"
 #include "Point.h"
+
+class Animation;
 
 struct SDL_Texture;
 
@@ -43,4 +44,4 @@ public:
     bool firstMenu = true;
 };
 
-#endif // !__MODULESCENENEWGAME_H_
+#endif // !__MODULESCENENEWGAME_H__

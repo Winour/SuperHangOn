@@ -1,5 +1,5 @@
-#ifndef __MODULESCENEINTRO_H_
-#define __MODULESCENEINTRO_H_
+#ifndef __MODULESCENEINTRO_H__
+#define __MODULESCENEINTRO_H__
 
 #include "Module.h"
 #include "Globals.h"
@@ -23,4 +23,4 @@ public:
     iPoint position;
 };
 
-#endif // !__MODULESCENEINTRO_H_
+#endif // !__MODULESCENEINTRO_H__
