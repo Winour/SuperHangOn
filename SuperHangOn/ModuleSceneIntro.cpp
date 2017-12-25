@@ -1,11 +1,8 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleTextures.h"
-#include "ModuleAudio.h"
 #include "ModuleInput.h"
 #include "ModuleRender.h"
-#include "ModuleCollision.h"
-#include "ModuleParticles.h"
 #include "ModuleSceneIntro.h"
 #include "ModuleFadeToBlack.h"
 
@@ -39,7 +36,7 @@ bool ModuleSceneIntro::Start() {
 
 update_status ModuleSceneIntro::Update(float deltaTime) {
 
-    if ((anim.Finished() || App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN) && App->fade->isFading() == false) {
+    if ((anim.Finished() || App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN) && App->fade->isFading() == false) {
          App->fade->FadeToBlack((Module*)App->sceneNewGame, this, 0.5f);
     }
 

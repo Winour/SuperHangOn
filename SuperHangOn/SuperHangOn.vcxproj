@@ -82,6 +82,7 @@
     <ClInclude Include="ModuleRender.h" />
     <ClInclude Include="ModuleSceneIntro.h" />
     <ClInclude Include="ModuleSceneMapSelection.h" />
+    <ClInclude Include="ModuleSceneMusicSelection.h" />
     <ClInclude Include="ModuleSceneNewGame.h" />
     <ClInclude Include="ModuleTextures.h" />
     <ClInclude Include="ModuleWindow.h" />
@@ -99,6 +100,7 @@
     <ClCompile Include="ModuleRender.cpp" />
     <ClCompile Include="ModuleSceneIntro.cpp" />
     <ClCompile Include="ModuleSceneMapSelection.cpp" />
+    <ClCompile Include="ModuleSceneMusicSelection.cpp" />
     <ClCompile Include="ModuleSceneNewGame.cpp" />
     <ClCompile Include="ModuleTextures.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />

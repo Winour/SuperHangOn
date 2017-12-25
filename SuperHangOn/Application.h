@@ -18,6 +18,7 @@ class ModuleParticles;
 class ModuleSceneIntro;
 class ModuleSceneNewGame;
 class ModuleSceneMapSelection;
+class ModuleSceneMusicSelection;
 
 class Application {
 public:
@@ -41,6 +42,7 @@ public:
     ModuleSceneIntro* sceneIntro;
     ModuleSceneNewGame* sceneNewGame;
     ModuleSceneMapSelection* sceneMapSelection;
+    ModuleSceneMusicSelection* sceneMusicSelection;
 
 private:
 	std::list<Module*> modules;
