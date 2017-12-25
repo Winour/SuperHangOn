@@ -50,7 +50,7 @@ typedef unsigned int uint;
 #define VSYNC true
 #define TITLE "Super Hang-On"
 #define BLINK_SLOW 0.6f
-#define BLINK_FAST 0.1f
+#define BLINK_FAST 0.2f
 #define FPS 30
 
 #endif //__GLOBALS_H__
