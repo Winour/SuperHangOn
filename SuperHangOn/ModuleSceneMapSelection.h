@@ -21,10 +21,10 @@ public:
     ~ModuleSceneMapSelection();
 
     bool Start();
-    update_status Update();
+    update_status Update(float deltaTime);
     bool CleanUp();
 
-public:
+private:
     SDL_Texture* map = nullptr;
     SDL_Rect background;
 
@@ -45,6 +45,8 @@ public:
     iPoint africaPos, europePos, americaPos, asiaPos;
     iPoint textEuropePos, textAfricaPos, textAsiaPos, textAmericaPos, textPushStartPos, textSelectClassPos, countdownPos;
     Uint8 selection = 0;
+    float timerFast = 0.0f;
+    float timerSlow = 0.0f;
 
 };
 

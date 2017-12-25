@@ -37,7 +37,7 @@ bool ModuleSceneIntro::Start() {
     return true;
 }
 
-update_status ModuleSceneIntro::Update() {
+update_status ModuleSceneIntro::Update(float deltaTime) {
 
     if ((anim.Finished() || App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN) && App->fade->isFading() == false) {
          App->fade->FadeToBlack((Module*)App->sceneNewGame, this, 0.5f);

@@ -14,10 +14,10 @@ public:
     ~ModuleSceneIntro();
 
     bool Start();
-    update_status Update();
+    update_status Update(float deltaTime);
     bool CleanUp();
 
-public:
+private:
     SDL_Texture* segaIntro = nullptr;
     Animation anim;
     iPoint position;

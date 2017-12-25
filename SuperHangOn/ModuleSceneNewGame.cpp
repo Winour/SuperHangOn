@@ -80,7 +80,7 @@ bool ModuleSceneNewGame::Start() {
     return true;
 }
 
-update_status ModuleSceneNewGame::Update() {
+update_status ModuleSceneNewGame::Update(float deltaTime) {
     if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN) {
         firstSelection = !firstSelection;
     }

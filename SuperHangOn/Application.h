@@ -2,6 +2,7 @@
 #define __APPLICATION_CPP__
 
 #include<list>
+#include<time.h>
 #include "Globals.h"
 #include "Module.h"
 
@@ -18,10 +19,8 @@ class ModuleSceneIntro;
 class ModuleSceneNewGame;
 class ModuleSceneMapSelection;
 
-class Application
-{
+class Application {
 public:
-
 	Application();
 	~Application();
 
@@ -44,8 +43,9 @@ public:
     ModuleSceneMapSelection* sceneMapSelection;
 
 private:
-
 	std::list<Module*> modules;
+    clock_t timer = 0;
+    float deltaTime = 0;
 };
 
 extern Application* App;

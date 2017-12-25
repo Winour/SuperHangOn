@@ -91,24 +91,47 @@ bool ModuleSceneMapSelection::Start() {
     return true;
 }
 
-update_status ModuleSceneMapSelection::Update() {
+update_status ModuleSceneMapSelection::Update(float deltaTime) {
+    timerFast += deltaTime;
+    timerSlow += deltaTime;
+    if (timerSlow >= BLINK_SLOW * 2) timerSlow -= BLINK_SLOW * 2;  
+    if (timerFast >= (BLINK_FAST * 2)) timerFast -= BLINK_FAST * 2;
+    
+    if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN) {
+        (selection == 3) ? selection = 0 : ++selection;
+    }
+    if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN) {
+        (selection == 0) ? selection = 3 : --selection;
+    }
+    if (selection > 3 || selection < 0) {
+        return UPDATE_STOP;
+    }
 
     App->renderer->DrawQuad(background, (Uint8)160, (Uint8)190, (Uint8)225, (Uint8)255, false);
-
-    App->renderer->Blit(map, americaPos.x, americaPos.y, &america, 0);
-    App->renderer->Blit(map, europePos.x, europePos.y, &europe, 0);
-    App->renderer->Blit(map, africaPos.x, africaPos.y, &africa, 0);
-    App->renderer->Blit(map, asiaPos.x, asiaPos.y, &asia, 0);
+    if ((timerFast > BLINK_FAST && selection == AMERICA) || selection != AMERICA) {
+        App->renderer->Blit(map, americaPos.x, americaPos.y, &america, 0);
+    }
+    if ((timerFast > BLINK_FAST && selection == EUROPE) || selection != EUROPE) {
+        App->renderer->Blit(map, europePos.x, europePos.y, &europe, 0);
+    }
+    if ((timerFast > BLINK_FAST && selection == AFRICA) || selection != AFRICA) {
+        App->renderer->Blit(map, africaPos.x, africaPos.y, &africa, 0);
+    }
+    if ((timerFast > BLINK_FAST && selection == ASIA) || selection != ASIA) {
+        App->renderer->Blit(map, asiaPos.x, asiaPos.y, &asia, 0);
+    }
 
     App->renderer->Blit(map, textAmericaPos.x, textAmericaPos.y, &textAmerica, 0);
     App->renderer->Blit(map, textEuropePos.x, textEuropePos.y, &textEurope, 0);
     App->renderer->Blit(map, textAfricaPos.x, textAfricaPos.y, &textAfrica, 0);
     App->renderer->Blit(map, textAsiaPos.x, textAsiaPos.y, &textAsia, 0);
 
-    App->renderer->Blit(map, textPushStartPos.x, textPushStartPos.y, &textPushStart, 0);
+    if (timerSlow > BLINK_SLOW) {
+        App->renderer->Blit(map, textPushStartPos.x, textPushStartPos.y, &textPushStart, 0);
+    }
     App->renderer->Blit(map, textSelectClassPos.x, textSelectClassPos.y, &textSelectClass, 0);
-
     App->renderer->Blit(map, countdownPos.x, countdownPos.y, &(countdown.GetCurrentFrame()), 0);
+
     return UPDATE_CONTINUE;
 }
 

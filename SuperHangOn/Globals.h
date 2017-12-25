@@ -49,7 +49,8 @@ typedef unsigned int uint;
 #define FULLSCREEN false
 #define VSYNC true
 #define TITLE "Super Hang-On"
-#define BLINK_SLOW 0.6
-#define BLINK_FAST 0.2
+#define BLINK_SLOW 0.6f
+#define BLINK_FAST 0.1f
+#define FPS 30
 
 #endif //__GLOBALS_H__
