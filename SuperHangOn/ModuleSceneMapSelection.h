@@ -25,7 +25,7 @@ public:
     bool CleanUp();
 
 public:
-    SDL_Texture* map;
+    SDL_Texture* map = nullptr;
     SDL_Rect background;
 
     SDL_Rect africa;
@@ -44,7 +44,7 @@ public:
 
     iPoint africaPos, europePos, americaPos, asiaPos;
     iPoint textEuropePos, textAfricaPos, textAsiaPos, textAmericaPos, textPushStartPos, textSelectClassPos, countdownPos;
-    uint music = 0;
+    Uint8 selection = 0;
 
 };
 

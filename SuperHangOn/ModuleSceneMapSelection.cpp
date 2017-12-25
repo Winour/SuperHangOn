@@ -83,6 +83,9 @@ bool ModuleSceneMapSelection::Start() {
     textPushStartPos.x = SCREEN_WIDTH / 2 - textPushStart.w / 2;
     textPushStartPos.y = SCREEN_HEIGHT * 4 / 5;
 
+    textSelectClassPos.x = SCREEN_WIDTH / 2 - textSelectClass.w / 2;
+    textSelectClassPos.y = SCREEN_HEIGHT / 8;
+
     countdownPos.x = SCREEN_WIDTH / 2 - countdown.GetCurrentFrame().w / 2;
     countdownPos.y = SCREEN_HEIGHT * 0.7f;
     return true;
@@ -103,6 +106,7 @@ update_status ModuleSceneMapSelection::Update() {
     App->renderer->Blit(map, textAsiaPos.x, textAsiaPos.y, &textAsia, 0);
 
     App->renderer->Blit(map, textPushStartPos.x, textPushStartPos.y, &textPushStart, 0);
+    App->renderer->Blit(map, textSelectClassPos.x, textSelectClassPos.y, &textSelectClass, 0);
 
     App->renderer->Blit(map, countdownPos.x, countdownPos.y, &(countdown.GetCurrentFrame()), 0);
     return UPDATE_CONTINUE;
