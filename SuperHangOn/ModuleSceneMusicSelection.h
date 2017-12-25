@@ -7,9 +7,9 @@
 
 class Animation;
 
-class ModuleSceneMusicSelection {
+class ModuleSceneMusicSelection : public Module {
 public:
-    ModuleSceneMusicSelection();
+    ModuleSceneMusicSelection(bool active = true);
     ~ModuleSceneMusicSelection();
 };
 

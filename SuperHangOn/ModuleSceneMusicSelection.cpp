@@ -10,7 +10,7 @@
 
 
 
-ModuleSceneMusicSelection::ModuleSceneMusicSelection() {
+ModuleSceneMusicSelection::ModuleSceneMusicSelection(bool active): Module(active) {
 }
 
 
