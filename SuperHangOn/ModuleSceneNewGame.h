@@ -42,6 +42,7 @@ private:
 
     bool firstSelection = true;
     bool firstMenu = true;
+    bool switching = false;
 };
 
 #endif // !__MODULESCENENEWGAME_H__

@@ -39,6 +39,7 @@ private:
     float timerFast = 0.0f;
     float timerSlow = 0.0f;
     bool musicChanged = false;
+    bool switching = false;
 };
 
 #endif // !__MODULESCENEMUSICSELECTION_H__

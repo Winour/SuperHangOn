@@ -54,17 +54,18 @@ update_status ModuleSceneMusicSelection::Update(float deltaTime) {
     timerSlow += deltaTime;
     if (timerSlow >= BLINK_SLOW * 2) timerSlow -= BLINK_SLOW * 2;
     if (timerFast >= (BLINK_FAST * 2)) timerFast -= BLINK_FAST * 2;
-
-    if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN) {
-        (selection == 0) ? selection = 3 : --selection;
-        musicChanged = true;
-    }
-    if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN) {
-        (selection == 3) ? selection = 0 : ++selection;
-        musicChanged = true;
-    }
-    if (selection > 3 || selection < 0) {
-        return UPDATE_STOP;
+    if (!switching) {
+        if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN) {
+            (selection == 0) ? selection = 3 : --selection;
+            musicChanged = true;
+        }
+        if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN) {
+            (selection == 3) ? selection = 0 : ++selection;
+            musicChanged = true;
+        }
+        if (selection > 3 || selection < 0) {
+            return UPDATE_STOP;
+        }
     }
 
     if (musicChanged) {

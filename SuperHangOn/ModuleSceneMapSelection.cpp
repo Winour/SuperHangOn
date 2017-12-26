@@ -94,18 +94,20 @@ update_status ModuleSceneMapSelection::Update(float deltaTime) {
     timerSlow += deltaTime;
     if (timerSlow >= BLINK_SLOW * 2) timerSlow -= BLINK_SLOW * 2;  
     if (timerFast >= (BLINK_FAST * 2)) timerFast -= BLINK_FAST * 2;
-    
-    if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN) {
-        (selection == 3) ? selection = 0 : ++selection;
-    }
-    if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN) {
-        (selection == 0) ? selection = 3 : --selection;
-    }
-    if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN) {
-        App->fade->FadeToBlack((Module*)App->sceneMusicSelection, this, 1.0f);
-    }
-    if (selection > 3 || selection < 0) {
-        selection = 0;
+    if (!switching) {
+        if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN) {
+            (selection == 3) ? selection = 0 : ++selection;
+        }
+        if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN) {
+            (selection == 0) ? selection = 3 : --selection;
+        }
+        if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN) {
+            switching = true;
+            App->fade->FadeToBlack((Module*)App->sceneMusicSelection, this, 1.0f);
+        }
+        if (selection > 3 || selection < 0) {
+            selection = 0;
+        }
     }
 
     App->renderer->DrawQuad(background, (Uint8)160, (Uint8)190, (Uint8)225, (Uint8)255, false);

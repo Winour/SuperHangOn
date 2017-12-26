@@ -47,7 +47,7 @@ private:
     Uint8 selection = 0;
     float timerFast = 0.0f;
     float timerSlow = 0.0f;
-
+    bool switching = false;
 };
 
 #endif // !__MODULESCENEMAPSELECTION__H__

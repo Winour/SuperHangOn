@@ -78,14 +78,17 @@ bool ModuleSceneNewGame::Start() {
 }
 
 update_status ModuleSceneNewGame::Update(float deltaTime) {
-    if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN) {
-        firstSelection = !firstSelection;
-    }
-    if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN && firstSelection) {
-        if (firstMenu) {
-            firstMenu = false;
-        } else {
-            App->fade->FadeToBlack((Module*)App->sceneMapSelection, this, 0.5f);
+    if (!switching) {
+        if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN) {
+            firstSelection = !firstSelection;
+        }
+        if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN && firstSelection) {
+            if (firstMenu) {
+                firstMenu = false;
+            } else {
+                switching = true;
+                App->fade->FadeToBlack((Module*)App->sceneMapSelection, this, 0.5f);
+            }
         }
     }
     if (logoAnim.Finished() == false) {
