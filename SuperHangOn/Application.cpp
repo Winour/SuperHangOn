@@ -59,7 +59,7 @@ bool Application::Init()
 	}
 
 	// Start the first scene --
-	fade->FadeToBlack(sceneMusicSelection, nullptr, 0.5f);
+	fade->FadeToBlack(sceneIntro, nullptr, 0.5f);
 
 	return ret;
 }

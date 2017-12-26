@@ -90,8 +90,11 @@ update_status ModuleSceneMusicSelection::Update(float deltaTime) {
     App->renderer->DrawQuad(background, (Uint8)225, (Uint8)160, (Uint8)0, (Uint8)255, false);
 
     App->renderer->Blit(graphics, musicListPos.x, musicListPos.y, &musicList, 0);
-    App->renderer->Blit(graphics, textPushStartPos.x, textPushStartPos.y, &textPushStart,0);
     App->renderer->Blit(graphics, textSelectMusicPos.x, textSelectMusicPos.y, &textSelectMusic,0);
+
+    if (timerSlow > BLINK_SLOW) {
+        App->renderer->Blit(graphics, textPushStartPos.x, textPushStartPos.y, &textPushStart, 0);
+    }
 
     listMask.y = musicListPos.y + musicList.h * selection / 4;
     if (timerFast > BLINK_FAST) {
