@@ -66,6 +66,9 @@ update_status ModuleSceneMusicSelection::Update(float deltaTime) {
         if (selection > 3 || selection < 0) {
             return UPDATE_STOP;
         }
+        if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN) {
+            switching = true;
+        }
     }
 
     if (musicChanged) {

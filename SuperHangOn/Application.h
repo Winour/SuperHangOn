@@ -19,6 +19,7 @@ class ModuleSceneIntro;
 class ModuleSceneNewGame;
 class ModuleSceneMapSelection;
 class ModuleSceneMusicSelection;
+class ModuleSceneAfrica;
 
 class Application {
 public:
@@ -43,6 +44,7 @@ public:
     ModuleSceneNewGame* sceneNewGame;
     ModuleSceneMapSelection* sceneMapSelection;
     ModuleSceneMusicSelection* sceneMusicSelection;
+    ModuleSceneAfrica* sceneAfrica;
 
 private:
 	std::list<Module*> modules;
