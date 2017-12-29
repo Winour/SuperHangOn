@@ -13,7 +13,7 @@
 
 
 
-ModuleSceneAfrica::ModuleSceneAfrica(bool active) : Module(active) {
+ModuleSceneAfrica::ModuleSceneAfrica(bool active) : ModuleSceneBase(active) {
 }
 
 

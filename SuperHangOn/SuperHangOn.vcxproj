@@ -82,6 +82,7 @@
     <ClInclude Include="ModuleParticles.h" />
     <ClInclude Include="ModuleRender.h" />
     <ClInclude Include="ModuleSceneAfrica.h" />
+    <ClInclude Include="ModuleSceneBase.h" />
     <ClInclude Include="ModuleSceneIntro.h" />
     <ClInclude Include="ModuleSceneMapSelection.h" />
     <ClInclude Include="ModuleSceneMusicSelection.h" />
@@ -102,6 +103,7 @@
     <ClCompile Include="ModuleParticles.cpp" />
     <ClCompile Include="ModuleRender.cpp" />
     <ClCompile Include="ModuleSceneAfrica.cpp" />
+    <ClCompile Include="ModuleSceneBase.cpp" />
     <ClCompile Include="ModuleSceneIntro.cpp" />
     <ClCompile Include="ModuleSceneMapSelection.cpp" />
     <ClCompile Include="ModuleSceneMusicSelection.cpp" />

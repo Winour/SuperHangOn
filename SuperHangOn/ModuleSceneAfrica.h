@@ -1,13 +1,9 @@
 #ifndef __MODULESCENEAFRICA_H__
 #define __MODULESCENEAFRICA_H__
 
-#include "Module.h"
-#include "Globals.h"
-#include "Point.h"
+#include "ModuleSceneBase.h"
 
-class Animation;
-
-class ModuleSceneAfrica : public Module {
+class ModuleSceneAfrica : public ModuleSceneBase {
 public:
     ModuleSceneAfrica(bool active = true);
     ~ModuleSceneAfrica();
@@ -16,7 +12,6 @@ public:
     update_status Update(float deltaTime);
     bool CleanUp();
     
-
 public:
 
 };
