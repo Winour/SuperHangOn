@@ -23,15 +23,20 @@ public:
     ~ModuleFont();
 
     bool Start();
-    update_status Update(float deltaTime);
-    bool CleanUp();
+
     unsigned int LoadFont(const char* filePath, const char* style, int _width, int _heigth, int _initY = 0);
     void DrawText(unsigned int fontID, const char* text, int _posX, int _posY);
 
 
 public:
-    std::vector<Font> fonts;
+    unsigned int countdownFont;
+    unsigned int yellowFont;
+    unsigned int whiteFont;
+    unsigned int redFont;
+    unsigned int greenFont;
 
+private:
+    std::vector<Font> fonts;
 };
 
 #endif // !__MODULEFONT_H__

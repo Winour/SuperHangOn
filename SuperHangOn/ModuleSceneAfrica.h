@@ -18,7 +18,7 @@ public:
     
 
 public:
-    unsigned int IDtest;
+
 };
 
 #endif // !__MODULESCENEAFRICA_H__

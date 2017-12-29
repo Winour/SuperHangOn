@@ -14,12 +14,11 @@ ModuleFont::~ModuleFont() {
 }
 
 bool ModuleFont::Start() {
-    return true;
-}
-update_status ModuleFont::Update(float deltaTime) {
-    return UPDATE_CONTINUE;
-}
-bool ModuleFont::CleanUp() {
+    countdownFont = LoadFont("fonts/numbers18x30.png", "9876543210", 18, 30);
+    yellowFont = LoadFont("fonts/numbers18x18.png", "1234567890", 16, 18);
+    whiteFont = LoadFont("fonts/numbers18x18.png", "1234567890", 16, 18, 18);
+    redFont = LoadFont("fonts/numbers18x18.png", "1234567890", 16, 18, 36);
+    greenFont = LoadFont("fonts/numbers18x18.png", "1234567890", 16, 18, 54);
     return true;
 }
 
@@ -39,8 +38,8 @@ unsigned int ModuleFont::LoadFont(const char* filePath, const char* style, int _
 
 void ModuleFont::DrawText(unsigned int fontID, const char* text, int _posX, int _posY) {
     for (int i = 0; i < strlen(text); i++) {
-        SDL_Rect* n = new SDL_Rect ({fonts[fontID].fontMap[text[i]], 0, fonts[fontID].width, fonts[fontID].height });    
-        App->renderer->Blit(fonts[fontID].texture, _posX + fonts[fontID].width * i, _posY, n);
+        SDL_Rect* n = new SDL_Rect ({ fonts[fontID].fontMap[text[i]] , fonts[fontID].initY , fonts[fontID].width , fonts[fontID].height });    
+        App->renderer->Blit(fonts[fontID].texture, _posX - fonts[fontID].width * (strlen(text) - i), _posY, n);
         delete n;
     }
 }
