@@ -14,6 +14,7 @@ class ModuleAudio;
 class ModuleFadeToBlack;
 class ModuleCollision;
 class ModuleParticles;
+class ModuleFont;
 
 class ModuleSceneIntro;
 class ModuleSceneNewGame;
@@ -39,6 +40,7 @@ public:
 	ModuleFadeToBlack* fade;
 	ModuleCollision* collision;
 	ModuleParticles* particles;
+    ModuleFont* font;
 
     ModuleSceneIntro* sceneIntro;
     ModuleSceneNewGame* sceneNewGame;

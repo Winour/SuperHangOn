@@ -15,6 +15,10 @@ public:
     bool Start();
     update_status Update(float deltaTime);
     bool CleanUp();
+    
+
+public:
+    unsigned int IDtest;
 };
 
 #endif // !__MODULESCENEAFRICA_H__

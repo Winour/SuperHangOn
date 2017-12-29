@@ -8,6 +8,7 @@
 #include "ModuleParticles.h"
 #include "ModuleInput.h"
 #include "ModuleFadeToBlack.h"
+#include "ModuleFont.h"
 #include "ModuleSceneAfrica.h"
 
 
@@ -20,6 +21,7 @@ ModuleSceneAfrica::~ModuleSceneAfrica() {
 }
 
 bool ModuleSceneAfrica::Start() {
+    IDtest = App->font->LoadFont("fonts/font18x30.png", "9876543210", 18, 30);
     return true;
 }
 
