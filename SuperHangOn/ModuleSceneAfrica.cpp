@@ -21,11 +21,12 @@ ModuleSceneAfrica::~ModuleSceneAfrica() {
 }
 
 bool ModuleSceneAfrica::Start() {
-    IDtest = App->font->LoadFont("fonts/font18x30.png", "9876543210", 18, 30);
+    IDtest = App->font->LoadFont("fonts/numbers18x30.png", "9876543210", 18, 30);
     return true;
 }
 
 update_status ModuleSceneAfrica::Update(float deltaTime) {
+    App->font->DrawText(IDtest, "529", 0, 0);
     return UPDATE_CONTINUE;
 }
 

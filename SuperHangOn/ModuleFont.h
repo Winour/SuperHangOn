@@ -11,7 +11,7 @@ struct SDL_Texture;
 
 struct Font {
     Uint8 width;
-    Uint8 heigth;
+    Uint8 height;
     Uint8 initY;
     SDL_Texture* texture = nullptr;
     std::map<char, int> fontMap;
@@ -26,6 +26,7 @@ public:
     update_status Update(float deltaTime);
     bool CleanUp();
     unsigned int LoadFont(const char* filePath, const char* style, int _width, int _heigth, int _initY = 0);
+    void DrawText(unsigned int fontID, const char* text, int _posX, int _posY);
 
 
 public:
