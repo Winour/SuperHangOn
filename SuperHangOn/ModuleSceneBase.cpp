@@ -26,8 +26,11 @@ ModuleSceneBase::~ModuleSceneBase() {
 }
 
 bool ModuleSceneBase::Start() {
+    App->player->Enable();
     SetUpGUIPos();
     SetUpColors();
+    timer = 5.0f;
+    state = nextState = Intro;
     for (int i = 0; i < 1000; i++) {
         Segment* s = new Segment();
         s->wZ = i * segmentLength;
@@ -36,15 +39,54 @@ bool ModuleSceneBase::Start() {
             s->curve = 3.0f;
             Hill(segments[i-1], s, i, 60, 100);         // 15-60  /  70-130  GOOD VALUES
         }
-        segments.push_back(s);
-
-        
+        segments.push_back(s);  
     }
     roadLength = segments.size();
     return true;
 }
 update_status ModuleSceneBase::Update(float deltaTime) {
     App->renderer->DrawQuad(sky, blueSky.r, blueSky.g, blueSky.b, blueSky.a, false);
+    switch (state) {
+        case Intro:
+            timer -= deltaTime;
+            if (timer < 0.0f) {
+                nextState = Race;
+                switch (App->musicSelected) {
+                    case 0:
+                        App->audio->PlayMusic("music/2OutrideaCrisis.ogg", 0.f);
+                        break;
+                    case 1:
+                        App->audio->PlayMusic("music/3Sprinter.ogg", 0.f);
+                        break;
+                    case 2:
+                        App->audio->PlayMusic("music/4WinningRun.ogg", 0.f);
+                        break;
+                    case 3:
+                        App->audio->PlayMusic("music/5HardRoad.ogg", 0.f);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            break;
+
+        case Race:
+
+            break;
+
+        case Finish:
+
+            break;
+
+        case GameOver:
+
+            break;
+
+        default:
+            break;
+
+    }
+    state = nextState;
     RecalculatePosition(App->player->speed * deltaTime * 55);
     DrawRoad(deltaTime);
     DrawGUI();

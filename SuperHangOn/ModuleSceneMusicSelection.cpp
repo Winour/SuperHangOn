@@ -67,6 +67,9 @@ update_status ModuleSceneMusicSelection::Update(float deltaTime) {
             return UPDATE_STOP;
         }
         if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN) {
+            App->musicSelected = selection;
+            App->fade->FadeToBlack((Module*)App->sceneAfrica, this);
+            App->audio->StopMusic(2.0f);
             switching = true;
         }
     }

@@ -9,6 +9,13 @@
 
 class Segment;
 
+enum States {
+    Intro,
+    Race,
+    Finish,
+    GameOver
+};
+
 class ModuleSceneBase : public Module {
 public:
     ModuleSceneBase(bool active = true);
@@ -31,6 +38,12 @@ private:
     void SetUpGUIPos();
     void SetUpColors();
 
+public:
+    States state, nextState;
+
+private:
+    float timer;
+
 private: // Road
     SDL_Rect sky;
     std::vector<Segment*> segments;
@@ -50,7 +63,6 @@ private: //Camera
     float camZ = 0.0f;
     float wPosZ = 0.0f;
     float offsetX = 0.0f;
-
 
 private: //GUI
     iPoint speedPos;

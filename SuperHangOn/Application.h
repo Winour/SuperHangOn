@@ -52,6 +52,8 @@ public:
 
     ModulePlayer* player;
 
+    Uint8 musicSelected = 0;
+
 private:
 	std::list<Module*> modules;
     clock_t timer = 0;
