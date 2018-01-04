@@ -110,8 +110,6 @@ bool ModuleRender::Blit(SDL_Texture* texture, int x, int y, SDL_Rect* section, f
 		SDL_QueryTexture(texture, NULL, NULL, &rect.w, &rect.h);
 	}
 
-
-
 	rect.w *= (int)(SCREEN_SIZE * scale);
 	rect.h *= (int)(SCREEN_SIZE * scale);
 

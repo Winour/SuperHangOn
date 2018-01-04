@@ -56,7 +56,9 @@ private:
     Animation slowFall;
     Animation fastFall;
 
-    iPoint position;
+    Animation dust;
+
+    iPoint position, dustPos;
 
     int state;
     float timer, fallSpeed;

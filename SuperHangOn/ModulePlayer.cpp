@@ -86,6 +86,13 @@ ModulePlayer::ModulePlayer(bool active) : Module(active) {
     turboStraight.loop = true;
     turboStraight.speed = 0.04f;
 
+    dust.frames.push_back({ 1285,56,28,13 });
+    dust.frames.push_back({ 1317,44,43,25 });
+    dust.frames.push_back({ 1363,19,45,50 });
+    dust.frames.push_back({ 1238,12,41,56 });
+    dust.loop = true;
+    dust.speed = 0.5f;
+
     slowFall.frames.push_back({ 0, 0, 220, 124 });
     slowFall.frames.push_back({ 220, 0, 220, 124 });
     slowFall.frames.push_back({ 440, 0, 220, 124 });
@@ -139,6 +146,8 @@ bool ModulePlayer::Start() {
     currentAnimation = &straight;
     position.x = SCREEN_WIDTH / 2 - currentAnimation->GetCurrentFrame().w / 2;
     position.y = SCREEN_HEIGHT * 5 / 6 - currentAnimation->GetCurrentFrame().h / 2;
+    dustPos.x = position.x + 13;
+    dustPos.y = position.y + 100;
     return true;
 }
 
@@ -176,6 +185,13 @@ update_status ModulePlayer::Update(float deltaTime) {
     }
 
     if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) {
+        if (xPos - dustPos.x + position.x * 3 > ROAD_WIDTH * 1.35f) {
+            outOfRoad = true;
+        } else if (xPos - dustPos.x + position.x < -ROAD_WIDTH* 1.4f) {
+            outOfRoad = true;
+        } else {
+            outOfRoad = false;
+        }
         if (state != LEFT_THREE) {
             timer += deltaTime;
             if (timer >= SWAP_ANIM) {
@@ -185,6 +201,13 @@ update_status ModulePlayer::Update(float deltaTime) {
             }
         }
     } else if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) {
+        if (xPos - dustPos.x + position.x > ROAD_WIDTH * 1.35f) {
+            outOfRoad = true;
+        } else if (xPos - dustPos.x * 2 + position.x < -ROAD_WIDTH* 1.3f) {
+            outOfRoad = true;
+        } else {
+            outOfRoad = false;
+        }
         if (state != RIGHT_THREE) {
             timer += deltaTime;
             if (timer >= SWAP_ANIM) {
@@ -214,47 +237,64 @@ update_status ModulePlayer::Update(float deltaTime) {
     } else if (xPos< -MAX_X) {
         xPos = -MAX_X;
     }
-    if (xPos > ROAD_WIDTH * 1.4f) {
-        outOfRoad = true;
-    } else if (xPos< -ROAD_WIDTH* 1.4f) {
-        outOfRoad = true;
-    } else {
-        outOfRoad = false;
-    }
-
-
 
     if (animChange) {
         animChange = false;
         switch (state) {
             case LEFT_THREE:
                 currentAnimation = &turnLeftThree;
+                RecalculatePos();
+                dustPos.x = position.x + 100;
+                dustPos.y = position.y + 70;
                 break;
             case LEFT_TWO:
                 currentAnimation = &turnLeftTwo;
+                RecalculatePos();
+                dustPos.x = position.x + 60;
+                dustPos.y = position.y + 90;
                 break;
             case LEFT_ONE:
                 currentAnimation = &turnLeftOne;
+                RecalculatePos();
+                dustPos.x = position.x + 28;
+                dustPos.y = position.y + 100;
                 break;
             case STRAIGHT:
                 currentAnimation = &straight;
+                RecalculatePos();
+                dustPos.x = position.x + 13;
+                dustPos.y = position.y + 100;
                 break;
             case RIGHT_ONE:
                 currentAnimation = &turnRightOne;
+                RecalculatePos();
+                dustPos.x = position.x;
+                dustPos.y = position.y + 100;
                 break;
             case RIGHT_TWO:
                 currentAnimation = &turnRightTwo;
+                RecalculatePos();
+                dustPos.x = position.x;
+                dustPos.y = position.y + 100;
                 break;
             case RIGHT_THREE:
                 currentAnimation = &turnRightThree;
+                RecalculatePos();
+                dustPos.x = position.x - 10;
+                dustPos.y = position.y + 70;
                 break;
             default:
                 break;
             }
-        RecalculatePos();
+
     }
     if (!fall) {
-        App->renderer->Blit(texture, position.x, position.y, &currentAnimation->GetCurrentFrame(), 0);
+        if (!outOfRoad) {
+            App->renderer->Blit(texture, position.x, position.y, &currentAnimation->GetCurrentFrame(), 0);
+        } else {
+            App->renderer->Blit(texture, position.x + rand() % 4 - 2, position.y + rand() % 4 - 2, &currentAnimation->GetCurrentFrame(), 0);
+            App->renderer->Blit(texture, dustPos.x, dustPos.y, &dust.GetCurrentFrame(), 0);
+        }
     } else {
         position.y -= fallSpeed;
         App->renderer->Blit(textureFalls, position.x - 40, position.y - 80, &currentAnimation->GetCurrentFrame(), 0,2.0f);
