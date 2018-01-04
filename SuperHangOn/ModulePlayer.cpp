@@ -109,9 +109,9 @@ update_status ModulePlayer::Update(float deltaTime) {
         }
     } else {
         if (speed < IDLE_SPEED) {
-            speed += deltaTime * ACCELERATION;
+            //speed += deltaTime * ACCELERATION;
         } else {
-            speed -= deltaTime * ACCELERATION;
+            speed -= deltaTime * ACCELERATION * 1.5f;
         }
         if (speed < IDLE_SPEED + 1 && speed > IDLE_SPEED - 1) {
             speed = IDLE_SPEED;
@@ -151,7 +151,7 @@ update_status ModulePlayer::Update(float deltaTime) {
             timer -= SWAP_ANIM;
         }
     }
-    xPos += deltaTime * speed * 15 * state;
+    xPos += deltaTime * speed * 8.0f * state;
     if (xPos > MAX_X) {
         xPos = MAX_X;
     } else if (xPos< -MAX_X) {
@@ -203,5 +203,5 @@ void ModulePlayer::RecalculatePos() {
 }
 
 void ModulePlayer::CentripetalForce(float value) {
-    xPos += value * speed * 10;
+    xPos += 3 * value * speed * speed / MAX_SPEED;
 }
