@@ -40,14 +40,15 @@ private:
 
     SDL_Rect textPushStart;
     SDL_Rect textSelectClass;
-    Animation countdown;
 
     iPoint africaPos, europePos, americaPos, asiaPos;
     iPoint textEuropePos, textAfricaPos, textAsiaPos, textAmericaPos, textPushStartPos, textSelectClassPos, countdownPos;
     Uint8 selection = 0;
+    float countdown = 15.0f;
     float timerFast = 0.0f;
     float timerSlow = 0.0f;
     bool switching = false;
+    bool timeOut = false;
 };
 
 #endif // !__MODULESCENEMAPSELECTION__H__

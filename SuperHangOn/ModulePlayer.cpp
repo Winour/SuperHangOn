@@ -218,6 +218,13 @@ update_status ModulePlayer::Update(float deltaTime) {
         }
     } else if (state < STRAIGHT) {
         timer += deltaTime;
+        if (xPos - dustPos.x + position.x > ROAD_WIDTH * 1.3f) {
+            outOfRoad = true;
+        } else if (xPos - dustPos.x + position.x < -ROAD_WIDTH* 1.3f) {
+            outOfRoad = true;
+        } else {
+            outOfRoad = false;
+        }
         if (timer >= SWAP_ANIM) {
             animChange = true;
             state++;
@@ -225,10 +232,25 @@ update_status ModulePlayer::Update(float deltaTime) {
         }
     } else if (state > STRAIGHT) {
         timer += deltaTime;
+        if (xPos - dustPos.x + position.x > ROAD_WIDTH * 1.3f) {
+            outOfRoad = true;
+        } else if (xPos - dustPos.x + position.x < -ROAD_WIDTH* 1.3f) {
+            outOfRoad = true;
+        } else {
+            outOfRoad = false;
+        }
         if (timer >= SWAP_ANIM) {
             animChange = true;
             state--;
             timer -= SWAP_ANIM;
+        }
+    } else {
+        if (xPos - dustPos.x + position.x > ROAD_WIDTH * 1.3f) {
+            outOfRoad = true;
+        } else if (xPos - dustPos.x + position.x < -ROAD_WIDTH* 1.3f) {
+            outOfRoad = true;
+        } else {
+            outOfRoad = false;
         }
     }
     xPos += deltaTime * speed * 8.0f * state;

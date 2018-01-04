@@ -6,9 +6,10 @@
 #include "ModuleRender.h"
 #include "ModuleInput.h"
 #include "ModuleFadeToBlack.h"
+#include "ModuleFont.h"
 #include "ModuleSceneMusicSelection.h"
 
-
+#include <string>
 
 ModuleSceneMusicSelection::ModuleSceneMusicSelection(bool active): Module(active) {
     background.x = 0;
@@ -22,12 +23,7 @@ ModuleSceneMusicSelection::ModuleSceneMusicSelection(bool active): Module(active
     musicList = { 4, 54, 564, 217 };
     textPushStart = { 255, 2, 313, 22 };
     textSelectMusic = { 8, 3, 223, 24 };
-    countdown.loop = true;
-    countdown.speed = 0.016f;
-
-
 }
-
 
 ModuleSceneMusicSelection::~ModuleSceneMusicSelection() {
 }
@@ -46,12 +42,25 @@ bool ModuleSceneMusicSelection::Start() {
     textSelectMusicPos.x = SCREEN_WIDTH / 2 - textSelectMusic.w / 2;
     textSelectMusicPos.y = SCREEN_HEIGHT / 10;
 
+    countdownPos.x = SCREEN_WIDTH / 2 + 15;
+    countdownPos.y = (int)(SCREEN_HEIGHT * 0.7f);
+
     return true;
 }
 
 update_status ModuleSceneMusicSelection::Update(float deltaTime) {
     timerFast += deltaTime;
     timerSlow += deltaTime;
+    if (!timeOut) {
+        if (countdown > 0.0f) {
+            countdown -= deltaTime;
+        } else {
+            timeOut = true;
+        }
+        if (countdown < 0.0f) {
+            countdown = 0.0f;
+        }
+    }
     if (timerSlow >= BLINK_SLOW * 2) timerSlow -= BLINK_SLOW * 2;
     if (timerFast >= (BLINK_FAST * 2)) timerFast -= BLINK_FAST * 2;
     if (!switching) {
@@ -66,7 +75,7 @@ update_status ModuleSceneMusicSelection::Update(float deltaTime) {
         if (selection > 3 || selection < 0) {
             return UPDATE_STOP;
         }
-        if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN) {
+        if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN || timeOut) {
             App->musicSelected = selection;
             App->fade->FadeToBlack((Module*)App->sceneAfrica, this);
             App->audio->StopMusic(2.0f);
@@ -107,6 +116,8 @@ update_status ModuleSceneMusicSelection::Update(float deltaTime) {
     if (timerFast > BLINK_FAST) {
         App->renderer->DrawQuad(listMask, (Uint8)225, (Uint8)160, (Uint8)0, (Uint8)255, false);
     }
+
+    App->font->DrawText(App->font->countdownFont, to_string((int)countdown).c_str(), countdownPos.x, countdownPos.y);
 
     return UPDATE_CONTINUE;
 }

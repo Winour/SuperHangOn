@@ -6,7 +6,9 @@
 #include "ModuleRender.h"
 #include "ModuleInput.h"
 #include "ModuleFadeToBlack.h"
+#include "ModuleFont.h"
 #include "ModuleSceneMapSelection.h"
+#include <string>
 
 
 
@@ -15,20 +17,6 @@ ModuleSceneMapSelection::ModuleSceneMapSelection(bool active) : Module(active) {
     background.y = 0;
     background.w = SCREEN_WIDTH;
     background.h = SCREEN_HEIGHT;
-
-    countdown.frames.push_back({ 4 , 49 , 32 , 30 });
-    countdown.frames.push_back({ 41 , 49 , 18 , 30 });
-    countdown.frames.push_back({ 63 , 49 , 18 , 30 });
-    countdown.frames.push_back({ 85 , 49 , 18 , 30 });
-    countdown.frames.push_back({ 107 , 49 , 18 , 30 });
-    countdown.frames.push_back({ 129 , 49 , 18 , 30 });
-    countdown.frames.push_back({ 151 , 49 , 18 , 30 });
-    countdown.frames.push_back({ 173 , 49 , 18 , 30 });
-    countdown.frames.push_back({ 195 , 49 , 18 , 30 });
-    countdown.frames.push_back({ 217 , 49 , 18 , 30 });
-    countdown.frames.push_back({ 236 , 49 , 18 , 30 });
-    countdown.loop = true;
-    countdown.speed = 0.016f;
 
     africa = { 584, 2, 110, 116 };
     europe = { 694, 6, 118, 104 };
@@ -84,7 +72,7 @@ bool ModuleSceneMapSelection::Start() {
     textSelectClassPos.x = SCREEN_WIDTH / 2 - textSelectClass.w / 2;
     textSelectClassPos.y = SCREEN_HEIGHT / 8;
 
-    countdownPos.x = SCREEN_WIDTH / 2 - countdown.GetCurrentFrame().w / 2;
+    countdownPos.x = SCREEN_WIDTH / 2 + 15;
     countdownPos.y = (int)(SCREEN_HEIGHT * 0.7f);
     return true;
 }
@@ -92,6 +80,16 @@ bool ModuleSceneMapSelection::Start() {
 update_status ModuleSceneMapSelection::Update(float deltaTime) {
     timerFast += deltaTime;
     timerSlow += deltaTime;
+    if (!timeOut) {
+        if (countdown > 0.0f) {
+            countdown -= deltaTime;
+        } else {
+            timeOut = true;
+        }
+        if (countdown < 0.0f) {
+            countdown = 0.0f;
+        }
+    }
     if (timerSlow >= BLINK_SLOW * 2) timerSlow -= BLINK_SLOW * 2;  
     if (timerFast >= (BLINK_FAST * 2)) timerFast -= BLINK_FAST * 2;
     if (!switching) {
@@ -101,7 +99,7 @@ update_status ModuleSceneMapSelection::Update(float deltaTime) {
         if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN) {
             (selection == 0) ? selection = 3 : --selection;
         }
-        if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN) {
+        if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN || timeOut) {
             switching = true;
             App->fade->FadeToBlack((Module*)App->sceneMusicSelection, this, 1.0f);
         }
@@ -133,7 +131,7 @@ update_status ModuleSceneMapSelection::Update(float deltaTime) {
         App->renderer->Blit(map, textPushStartPos.x, textPushStartPos.y, &textPushStart, 0);
     }
     App->renderer->Blit(map, textSelectClassPos.x, textSelectClassPos.y, &textSelectClass, 0);
-    App->renderer->Blit(map, countdownPos.x, countdownPos.y, &(countdown.GetCurrentFrame()), 0);
+    App->font->DrawText(App->font->countdownFont, to_string((int)countdown).c_str(), countdownPos.x, countdownPos.y);
 
     return UPDATE_CONTINUE;
 }

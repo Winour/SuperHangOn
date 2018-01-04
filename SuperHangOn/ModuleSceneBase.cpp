@@ -35,8 +35,8 @@ bool ModuleSceneBase::Start() {
         Segment* s = new Segment();
         s->wZ = i * segmentLength;
         s->wY = (i > 0) ? (segments[i - 1])->wY : 0;
-        if (i > 90) {
-            s->curve = 3.0f;
+        if (i > 20) {
+            s->curve = -3.0f;
             Hill(segments[i-1], s, i, 60, 100);         // 15-60  /  70-130  GOOD VALUES
         }
         segments.push_back(s);  
