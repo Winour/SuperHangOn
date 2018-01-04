@@ -85,6 +85,46 @@ ModulePlayer::ModulePlayer(bool active) : Module(active) {
     turboStraight.frames.push_back({ 1058, 870, 66, 146 });
     turboStraight.loop = true;
     turboStraight.speed = 0.04f;
+
+    slowFall.frames.push_back({ 0, 0, 220, 124 });
+    slowFall.frames.push_back({ 220, 0, 220, 124 });
+    slowFall.frames.push_back({ 440, 0, 220, 124 });
+    slowFall.frames.push_back({ 660, 0, 220, 124 });
+    slowFall.frames.push_back({ 880, 0, 220, 124 });
+    slowFall.frames.push_back({ 1100, 0, 220, 124 });
+    slowFall.frames.push_back({ 0, 124, 220, 124 });
+    slowFall.frames.push_back({ 220, 124, 220, 124 });
+    slowFall.frames.push_back({ 440, 124, 220, 124 });
+    slowFall.frames.push_back({ 660, 124, 220, 124 });
+    slowFall.frames.push_back({ 880, 124, 220, 124 });
+    slowFall.frames.push_back({ 1100, 124, 220, 124 });
+    slowFall.frames.push_back({ 0, 248, 220, 124 });
+    slowFall.frames.push_back({ 0, 248, 220, 124 });
+    slowFall.frames.push_back({ 0, 248, 220, 124 });
+    slowFall.frames.push_back({ 0, 248, 220, 124 });
+    slowFall.frames.push_back({ 0, 248, 220, 124 });
+    slowFall.frames.push_back({ 0, 248, 220, 124 });
+    slowFall.loop = false;
+    slowFall.speed = 0.2f;
+
+    fastFall.frames.push_back({ 0, 373, 171, 144 });
+    fastFall.frames.push_back({ 171, 373, 171, 144 });
+    fastFall.frames.push_back({ 342, 373, 171, 144 });
+    fastFall.frames.push_back({ 513, 373, 171, 144 });
+    fastFall.frames.push_back({ 684, 373, 171, 144 });
+    fastFall.frames.push_back({ 855, 373, 171, 144 });
+    fastFall.frames.push_back({ 1026, 373, 171, 144 });
+    fastFall.frames.push_back({ 0, 517, 171, 144 });
+    fastFall.frames.push_back({ 171, 517, 171, 144 });
+    fastFall.frames.push_back({ 342, 517, 171, 144 });
+    fastFall.frames.push_back({ 513, 517, 171, 144 });
+    fastFall.frames.push_back({ 513, 517, 171, 144 });
+    fastFall.frames.push_back({ 513, 517, 171, 144 });
+    fastFall.frames.push_back({ 513, 517, 171, 144 });
+    fastFall.frames.push_back({ 513, 517, 171, 144 });
+    fastFall.frames.push_back({ 513, 517, 171, 144 });
+    fastFall.loop = false;
+    fastFall.speed = 0.2f;
 }
 
 
@@ -95,6 +135,7 @@ bool ModulePlayer::Start() {
     timer = speed = xPos = 0.0f;
     state = 0;
     texture = App->textures->Load("sprites/map&players.png");
+    textureFalls = App->textures->Load("sprites/falls.png");
     currentAnimation = &straight;
     position.x = SCREEN_WIDTH / 2 - currentAnimation->GetCurrentFrame().w / 2;
     position.y = SCREEN_HEIGHT * 5 / 6 - currentAnimation->GetCurrentFrame().h / 2;
@@ -102,20 +143,36 @@ bool ModulePlayer::Start() {
 }
 
 update_status ModulePlayer::Update(float deltaTime) {
-    if (App->input->GetKey(SDL_SCANCODE_X) == KEY_REPEAT) {
-        speed += deltaTime * ACCELERATION * 2;
-        if (speed > MAX_SPEED) {
-            speed = MAX_SPEED;
+    if (!fall) {
+        if (App->input->GetKey(SDL_SCANCODE_X) == KEY_REPEAT) {
+            if (!outOfRoad) {
+                speed += deltaTime * ACCELERATION * 2;
+                if (speed > MAX_SPEED) {
+                    speed = MAX_SPEED;
+                }
+            } else {
+                speed += deltaTime * ACCELERATION * 2;
+                if (speed > MAX_SPEED_OUT_OF_ROAD) {
+                    speed -= deltaTime * 10 *ACCELERATION;
+                }
+            }
+        } else {
+            if (speed < IDLE_SPEED) {
+                speed += deltaTime * ACCELERATION;
+            } else {
+                speed -= deltaTime * ACCELERATION * 1.5f;
+            }
+            if (speed < IDLE_SPEED + 1 && speed > IDLE_SPEED - 1) {
+                speed = IDLE_SPEED;
+            }
         }
     } else {
-        if (speed < IDLE_SPEED) {
-            speed += deltaTime * ACCELERATION;
-        } else {
-            speed -= deltaTime * ACCELERATION * 1.5f;
-        }
-        if (speed < IDLE_SPEED + 1 && speed > IDLE_SPEED - 1) {
-            speed = IDLE_SPEED;
-        }
+        speed = 0;
+    }
+    if (App->input->GetKey(SDL_SCANCODE_0) == KEY_DOWN) {
+        currentAnimation = &fastFall;
+        fall = true;
+        fallSpeed = speed * 0.25f;
     }
 
     if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) {
@@ -157,6 +214,13 @@ update_status ModulePlayer::Update(float deltaTime) {
     } else if (xPos< -MAX_X) {
         xPos = -MAX_X;
     }
+    if (xPos > ROAD_WIDTH * 1.4f) {
+        outOfRoad = true;
+    } else if (xPos< -ROAD_WIDTH* 1.4f) {
+        outOfRoad = true;
+    } else {
+        outOfRoad = false;
+    }
 
 
 
@@ -189,7 +253,13 @@ update_status ModulePlayer::Update(float deltaTime) {
             }
         RecalculatePos();
     }
-    App->renderer->Blit(texture, position.x, position.y, &currentAnimation->GetCurrentFrame(), 0 );
+    if (!fall) {
+        App->renderer->Blit(texture, position.x, position.y, &currentAnimation->GetCurrentFrame(), 0);
+    } else {
+        position.y -= fallSpeed;
+        App->renderer->Blit(textureFalls, position.x - 40, position.y - 80, &currentAnimation->GetCurrentFrame(), 0,2.0f);
+        fallSpeed = fallSpeed * 2 / 3;
+    }
     return UPDATE_CONTINUE;
 }
 

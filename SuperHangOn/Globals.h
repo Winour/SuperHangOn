@@ -64,6 +64,7 @@ typedef unsigned int uint;
 #define ACCELERATION 35
 #define IDLE_SPEED 90
 #define MAX_SPEED 280
+#define MAX_SPEED_OUT_OF_ROAD 110
 #define SEGMENT_LENGTH 240
 #define SMALL_RUMBLE_PROPORTION 0.03f
 #define BIG_RUMBLE_PROPORTION 0.07f

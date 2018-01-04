@@ -93,7 +93,7 @@ bool ModuleRender::CleanUp()
 }
 
 // Blit to screen
-bool ModuleRender::Blit(SDL_Texture* texture, int x, int y, SDL_Rect* section, float speed)
+bool ModuleRender::Blit(SDL_Texture* texture, int x, int y, SDL_Rect* section, float speed, float scale)
 {
 	bool ret = true;
 	SDL_Rect rect;
@@ -110,8 +110,10 @@ bool ModuleRender::Blit(SDL_Texture* texture, int x, int y, SDL_Rect* section, f
 		SDL_QueryTexture(texture, NULL, NULL, &rect.w, &rect.h);
 	}
 
-	rect.w *= SCREEN_SIZE;
-	rect.h *= SCREEN_SIZE;
+
+
+	rect.w *= (int)(SCREEN_SIZE * scale);
+	rect.h *= (int)(SCREEN_SIZE * scale);
 
 	if(SDL_RenderCopy(renderer, texture, section, &rect) != 0)
 	{

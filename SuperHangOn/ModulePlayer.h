@@ -37,6 +37,7 @@ private:
 
 private:
     SDL_Texture* texture = nullptr;
+    SDL_Texture* textureFalls = nullptr;
     Animation* currentAnimation = nullptr;
     Animation turnRightThree;
     Animation turnRightTwo;
@@ -52,18 +53,17 @@ private:
     Animation turboLeftOne;
     Animation turboLeftTwo;
     Animation turboLeftThree;
+    Animation slowFall;
+    Animation fastFall;
 
     iPoint position;
 
-
     int state;
-    float timer;
+    float timer, fallSpeed;
     bool animChange = false;
     bool turbo = false;
-
-
-
-
+    bool fall = false;
+    bool outOfRoad = false;
 };
 
 #endif // !__MODULEPLAYER_H__
