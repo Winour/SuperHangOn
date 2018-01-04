@@ -23,7 +23,7 @@ public:
     update_status Update(float deltaTime);
     bool CleanUp();
 private:
-    SDL_Texture* graphics = nullptr;
+    SDL_Texture* texture = nullptr;
     SDL_Rect background;
 
     SDL_Rect musicList;

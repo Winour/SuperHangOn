@@ -55,25 +55,25 @@ bool ModuleSceneMapSelection::Start() {
     App->audio->PlayMusic("music/1SelectYourClass.ogg", 0.5f);
 
     americaPos.x = SCREEN_WIDTH / 8;
-    americaPos.y = SCREEN_HEIGHT * 0.55f - america.h / 2;
+    americaPos.y = (int)(SCREEN_HEIGHT * 0.55f) - america.h / 2;
 
     textAmericaPos.x = americaPos.x + 40;
     textAmericaPos.y = americaPos.y + 60;
 
-    europePos.x = SCREEN_WIDTH * 0.55f - europe.w * 2 / 3;
-    europePos.y = SCREEN_HEIGHT * 0.48f - europe.h;
+    europePos.x = (int)(SCREEN_WIDTH * 0.55f) - europe.w * 2 / 3;
+    europePos.y = (int)(SCREEN_HEIGHT * 0.48f) - europe.h;
 
     textEuropePos.x = europePos.x;
     textEuropePos.y = europePos.y + 30;
 
-    africaPos.x = SCREEN_WIDTH * 0.55f - europe.w * 2 / 3 + 8;
-    africaPos.y = SCREEN_HEIGHT * 0.48f - 7;
+    africaPos.x = (int)(SCREEN_WIDTH * 0.55f) - europe.w * 2 / 3 + 8;
+    africaPos.y = (int)(SCREEN_HEIGHT * 0.48f) - 7;
 
     textAfricaPos.x = africaPos.x;
     textAfricaPos.y = africaPos.y + 30;
 
-    asiaPos.x = SCREEN_WIDTH * 1.05f - asia.w * 1.49f;
-    asiaPos.y = SCREEN_HEIGHT * 0.55f - asia.h * 2 / 3 + 17;
+    asiaPos.x = (int)(SCREEN_WIDTH * 1.05f) - (int)(asia.w * 1.49f);
+    asiaPos.y = (int)(SCREEN_HEIGHT * 0.55f) - asia.h * 2 / 3 + 17;
 
     textAsiaPos.x = asiaPos.x + 50;
     textAsiaPos.y = asiaPos.y + 35;
@@ -85,7 +85,7 @@ bool ModuleSceneMapSelection::Start() {
     textSelectClassPos.y = SCREEN_HEIGHT / 8;
 
     countdownPos.x = SCREEN_WIDTH / 2 - countdown.GetCurrentFrame().w / 2;
-    countdownPos.y = SCREEN_HEIGHT * 0.7f;
+    countdownPos.y = (int)(SCREEN_HEIGHT * 0.7f);
     return true;
 }
 

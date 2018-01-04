@@ -40,7 +40,7 @@ update_status ModuleSceneIntro::Update(float deltaTime) {
          App->fade->FadeToBlack((Module*)App->sceneNewGame, this, 0.5f);
     }
 
-    App->renderer->Blit(segaIntro, position.x, position.y, &(anim.GetCurrentFrame()));
+    App->renderer->Blit(segaIntro, position.x, position.y, &(anim.GetCurrentFrame()), 0.0f);
 
     return UPDATE_CONTINUE;
 }

@@ -15,6 +15,8 @@
 #include "ModuleSceneMusicSelection.h"
 #include "ModuleSceneAfrica.h"
 
+#include "ModulePlayer.h"
+
 
 using namespace std;
 
@@ -35,6 +37,8 @@ Application::Application()
     modules.push_back(sceneMapSelection = new ModuleSceneMapSelection(false));
     modules.push_back(sceneMusicSelection = new ModuleSceneMusicSelection(false));
     modules.push_back(sceneAfrica = new ModuleSceneAfrica(false));
+
+    modules.push_back(player = new ModulePlayer(true));
 
 	// Modules to draw on top of game logic
 	//modules.push_back(collision = new ModuleCollision());
@@ -62,7 +66,7 @@ bool Application::Init()
 	}
 
 	// Start the first scene --
-	fade->FadeToBlack(sceneIntro, nullptr, 0.5f);
+	fade->FadeToBlack(sceneAfrica, nullptr, 0.5f);
 
 	return ret;
 }

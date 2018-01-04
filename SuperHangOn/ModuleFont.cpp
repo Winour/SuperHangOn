@@ -37,9 +37,9 @@ unsigned int ModuleFont::LoadFont(const char* filePath, const char* style, int _
 }
 
 void ModuleFont::DrawText(unsigned int fontID, const char* text, int _posX, int _posY) {
-    for (int i = 0; i < strlen(text); i++) {
+    for (size_t i = 0; i < strlen(text); i++) {
         SDL_Rect* n = new SDL_Rect ({ fonts[fontID].fontMap[text[i]] , fonts[fontID].initY , fonts[fontID].width , fonts[fontID].height });    
-        App->renderer->Blit(fonts[fontID].texture, _posX - fonts[fontID].width * (strlen(text) - i), _posY, n);
+        App->renderer->Blit(fonts[fontID].texture, _posX - fonts[fontID].width * (strlen(text) - i), _posY, n, 0.0f);
         delete n;
     }
 }

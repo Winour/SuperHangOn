@@ -5,6 +5,11 @@
 #include "ModuleInput.h"
 #include "SDL/include/SDL.h"
 
+
+#include "SDL_gfx/include/sdl2_gfxprimitives.h"
+
+#pragma comment( lib, "SDL_gfx/libx86/SDL2_gfx.lib" )
+
 ModuleRender::ModuleRender()
 {
 	camera.x = camera.y = 0;
@@ -140,4 +145,18 @@ bool ModuleRender::DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uin
 	}
 
 	return ret;
+}
+
+bool ModuleRender::DrawSegment(SDL_Color _color, Sint16 x1, Sint16 y1, Sint16 w1, Sint16 x2, Sint16 y2, Sint16 w2) {
+    Sint16 x[4] = { x1 - w1, x2 - w2, x2 + w2, x1 + w1 };
+    Sint16 y[4] = { y1, y2, y2, y1 };
+    filledPolygonRGBA(renderer, x, y, 4, _color.r, _color.g, _color.b, _color.a);
+    return true;
+}
+
+bool ModuleRender::DrawSegment(int r, int g, int b, int a, Sint16 x1, Sint16 y1, Sint16 w1, Sint16 x2, Sint16 y2, Sint16 w2) {
+    Sint16 x[4] = { x1 - w1, x2 - w2, x2 + w2, x1 + w1 };
+    Sint16 y[4] = { y1, y2, y2, y1 };
+    filledPolygonRGBA(renderer, x, y, 4, r, g, b, a);
+    return true;
 }

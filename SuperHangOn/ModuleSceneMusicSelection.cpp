@@ -34,7 +34,7 @@ ModuleSceneMusicSelection::~ModuleSceneMusicSelection() {
 
 bool ModuleSceneMusicSelection::Start() {
     App->renderer->camera.x = App->renderer->camera.y = 0;
-    graphics = App->textures->Load("sprites/musicMenu.png");
+    texture = App->textures->Load("sprites/musicMenu.png");
     App->audio->PlayMusic("music/2OutrideaCrisis.ogg", 0.f);
 
     musicListPos.x = SCREEN_WIDTH / 2 - musicList.w / 2;
@@ -93,11 +93,11 @@ update_status ModuleSceneMusicSelection::Update(float deltaTime) {
 
     App->renderer->DrawQuad(background, (Uint8)225, (Uint8)160, (Uint8)0, (Uint8)255, false);
 
-    App->renderer->Blit(graphics, musicListPos.x, musicListPos.y, &musicList, 0);
-    App->renderer->Blit(graphics, textSelectMusicPos.x, textSelectMusicPos.y, &textSelectMusic,0);
+    App->renderer->Blit(texture, musicListPos.x, musicListPos.y, &musicList, 0);
+    App->renderer->Blit(texture, textSelectMusicPos.x, textSelectMusicPos.y, &textSelectMusic,0);
 
     if (timerSlow > BLINK_SLOW) {
-        App->renderer->Blit(graphics, textPushStartPos.x, textPushStartPos.y, &textPushStart, 0);
+        App->renderer->Blit(texture, textPushStartPos.x, textPushStartPos.y, &textPushStart, 0);
     }
 
     listMask.y = musicListPos.y + musicList.h * selection / 4;

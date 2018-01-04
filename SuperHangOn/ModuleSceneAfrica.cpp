@@ -21,13 +21,6 @@ ModuleSceneAfrica::~ModuleSceneAfrica() {
 }
 
 bool ModuleSceneAfrica::Start() {
-    return true;
-}
-
-update_status ModuleSceneAfrica::Update(float deltaTime) {
-    return UPDATE_CONTINUE;
-}
-
-bool ModuleSceneAfrica::CleanUp() {
+    ModuleSceneBase::Start();
     return true;
 }
