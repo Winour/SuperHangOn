@@ -69,7 +69,7 @@ typedef unsigned int uint;
 #define BIG_RUMBLE_PROPORTION 0.07f
 #define ROAD_WIDTH 2100
 #define MAX_X 5500.0f
-#define CAMERA_DEPTH 0.4f
+#define CAMERA_DEPTH 0.35f
 #define FPS 60
 
 #endif //__GLOBALS_H__

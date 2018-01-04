@@ -109,7 +109,7 @@ update_status ModulePlayer::Update(float deltaTime) {
         }
     } else {
         if (speed < IDLE_SPEED) {
-            //speed += deltaTime * ACCELERATION;
+            speed += deltaTime * ACCELERATION;
         } else {
             speed -= deltaTime * ACCELERATION * 1.5f;
         }

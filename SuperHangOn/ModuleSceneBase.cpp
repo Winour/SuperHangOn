@@ -29,19 +29,16 @@ bool ModuleSceneBase::Start() {
     SetUpGUIPos();
     SetUpColors();
     for (int i = 0; i < 1000; i++) {
-        if ((i / 500) % 2 == 0) {
-            Segment* s = new Segment();
-            s->wZ = i * segmentLength;
-            s->wY = (i > 0) ? (segments[i - 1])->wY : 0;
-            s->curve = 10.0f;
-            segments.push_back(s);
-        } else {
-            Segment* s = new Segment();
-            s->wZ = i * segmentLength;
-            s->wY = (i > 0) ? (segments[i - 1])->wY : 0;
-            s->curve = -5.0f;
-            segments.push_back(s);
+        Segment* s = new Segment();
+        s->wZ = i * segmentLength;
+        s->wY = (i > 0) ? (segments[i - 1])->wY : 0;
+        if (i > 90) {
+            s->curve = 3.0f;
+            Hill(segments[i-1], s, i, 60, 100);         // 15-60  /  70-130  GOOD VALUES
         }
+        segments.push_back(s);
+
+        
     }
     roadLength = segments.size();
     return true;
@@ -112,8 +109,8 @@ void ModuleSceneBase::DrawTrack(const Segment* s1, const Segment* s2, bool color
         App->renderer->DrawSegment(white, p1x - p1w - (Sint16)(p1w * SMALL_RUMBLE_PROPORTION), p1y, (Sint16)(p1w * SMALL_RUMBLE_PROPORTION), p2x - p2w - (Sint16)(p2w * SMALL_RUMBLE_PROPORTION), p2y, (Sint16)(p2w * SMALL_RUMBLE_PROPORTION));
         App->renderer->DrawSegment(white, p1x + p1w + (Sint16)(p1w * SMALL_RUMBLE_PROPORTION), p1y, (Sint16)(p1w * SMALL_RUMBLE_PROPORTION), p2x + p2w + (Sint16)(p2w * SMALL_RUMBLE_PROPORTION), p2y, (Sint16)(p2w * SMALL_RUMBLE_PROPORTION));
 
-        App->renderer->DrawSegment(greyDark, p1x - p1w - (Sint16)(p1w * SMALL_RUMBLE_PROPORTION) - (Sint16)(p1w * BIG_RUMBLE_PROPORTION), p1y, (Sint16)(p1w * BIG_RUMBLE_PROPORTION), p2x - p2w - (Sint16)(p2w * SMALL_RUMBLE_PROPORTION) - (Sint16)(p2w * BIG_RUMBLE_PROPORTION), y2, (Sint16)(p2w * BIG_RUMBLE_PROPORTION));
-        App->renderer->DrawSegment(greyDark, p1x + p1w + (Sint16)(p1w * SMALL_RUMBLE_PROPORTION) + (Sint16)(p1w * BIG_RUMBLE_PROPORTION), p1y, (Sint16)(p1w * BIG_RUMBLE_PROPORTION), p2x + p2w + (Sint16)(p2w * SMALL_RUMBLE_PROPORTION) + (Sint16)(p2w * BIG_RUMBLE_PROPORTION), y2, (Sint16)(p2w * BIG_RUMBLE_PROPORTION));
+        App->renderer->DrawSegment(greyDark, p1x - p1w - (Sint16)(p1w * SMALL_RUMBLE_PROPORTION) - (Sint16)(p1w * BIG_RUMBLE_PROPORTION), p1y, (Sint16)(p1w * BIG_RUMBLE_PROPORTION), p2x - p2w - (Sint16)(p2w * SMALL_RUMBLE_PROPORTION) - (Sint16)(p2w * BIG_RUMBLE_PROPORTION), p2y, (Sint16)(p2w * BIG_RUMBLE_PROPORTION));
+        App->renderer->DrawSegment(greyDark, p1x + p1w + (Sint16)(p1w * SMALL_RUMBLE_PROPORTION) + (Sint16)(p1w * BIG_RUMBLE_PROPORTION), p1y, (Sint16)(p1w * BIG_RUMBLE_PROPORTION), p2x + p2w + (Sint16)(p2w * SMALL_RUMBLE_PROPORTION) + (Sint16)(p2w * BIG_RUMBLE_PROPORTION), p2y, (Sint16)(p2w * BIG_RUMBLE_PROPORTION));
 
     }
 }
@@ -123,9 +120,9 @@ void ModuleSceneBase::WorldToScreen(Segment &s, bool b) {
     float cameraY = s.wY - camY;
     float cameraZ = s.wZ - (camZ - (b ? roadLength*segmentLength : 0));
     s.scale = camDepth / cameraZ;   
-    s.sX = ((1.0f + (s.scale * cameraX)) * (SCREEN_WIDTH / 1.8f));
+    s.sX = ((1.0f + (s.scale * cameraX)) * (SCREEN_WIDTH / 2.0f));
     s.sY = ((1.0f - (s.scale * cameraY)) * (SCREEN_HEIGHT / 1.8f));
-    s.sZ = (s.scale*roadWidth * (SCREEN_WIDTH / 2));
+    s.sZ = (s.scale*roadWidth * (SCREEN_WIDTH / 1.8f));
 }
 
 void ModuleSceneBase::RecalculatePosition(float speed) {
@@ -135,6 +132,14 @@ void ModuleSceneBase::RecalculatePosition(float speed) {
         wPosZ -= n * segmentLength;
         camZ += n * segmentLength;
     }
+}
+
+void ModuleSceneBase::Hill(const Segment* a, Segment* b, float value, float length, float height) {
+    assert(a != nullptr);
+    assert(b != nullptr);
+    float previousY = a->wY;
+    float newY = previousY + height * cos(value * length * 0.001f);
+    b->wY = newY;
 }
 
 

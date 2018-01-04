@@ -26,6 +26,8 @@ private:
     void WorldToScreen(Segment &s, bool b);
     void RecalculatePosition(float speed);
 
+    void Hill(const Segment* a, Segment* b, float value, float length, float height);
+
     void SetUpGUIPos();
     void SetUpColors();
 
