@@ -53,6 +53,7 @@ public:
     ModulePlayer* player;
 
     Uint8 musicSelected = 0;
+    unsigned int topScore = 1000000;
 
 private:
 	std::list<Module*> modules;

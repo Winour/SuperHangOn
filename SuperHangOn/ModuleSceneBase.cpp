@@ -19,8 +19,18 @@
 using namespace std;
 
 ModuleSceneBase::ModuleSceneBase(bool active) : Module(active) {
-    background = { 20, 61, 350, 275 };
-    mountains = { 668,98,625,28 };
+    background = { 20 , 61 , 350 , 275 };
+    mountains = { 668 , 98 , 625 , 28 };
+    score = { 175 , 437 , 98 , 26};
+    time = { 97, 437, 76, 26 };
+    course = { 409, 421, 98, 18 };
+    stage = { 275, 421, 83, 18 };
+    africa = { 266 , 467 , 99 , 20 };
+    top = { 33 , 437 , 62 , 25 };
+    speed = { 275 , 441 , 82 , 18 };
+    km = { 367 , 441 , 34 , 18 };
+    sg = { 33 , 467 , 226 , 18 };
+
 }
 
 
@@ -30,18 +40,21 @@ ModuleSceneBase::~ModuleSceneBase() {
 bool ModuleSceneBase::Start() {
     App->player->Enable();
     textureBackground = App->textures->Load("sprites/backgrounds.png");
-    SetUpGUIPos();
+    guiTexture = App->textures->Load("sprites/map&players.png");
+    SetUpGUI();
     SetUpColors();
+    stageNumber = 1;
     timer = 5.0f;
+    countdown = 50.0f;
     state = nextState = Intro;
     for (int i = 0; i < 1000; i++) {
         Segment* s = new Segment();
         s->wZ = i * segmentLength;
         s->wY = (i > 0) ? (segments[i - 1])->wY : 0;
-        if (i > 20) {
-            s->curve = -3.0f;
-            Hill(segments[i-1], s, i, 40, 100);         // 15-60  /  70-130  GOOD VALUES
+        if (i % 50 == 0) {
+            s->spriteID = 1;
         }
+                                                     // 15-60  /  70-130  GOOD VALUES
         segments.push_back(s);  
     }
     roadLength = segments.size();
@@ -74,7 +87,7 @@ update_status ModuleSceneBase::Update(float deltaTime) {
             break;
 
         case Race:
-
+            countdown -= deltaTime;
             break;
 
         case Finish:
@@ -97,13 +110,12 @@ update_status ModuleSceneBase::Update(float deltaTime) {
     return UPDATE_CONTINUE;
 }
 
-void ModuleSceneBase::DrawGUI() {
-    App->font->DrawText(App->font->redFont, to_string((int)App->player->speed).c_str(), speedPos.x, speedPos.y);
-
-}
 
 void ModuleSceneBase::DrawRoad(float deltaTime) {
-    while (camZ >= roadLength * segmentLength) camZ -= roadLength * segmentLength;
+    while (camZ >= roadLength * segmentLength) {
+        camZ -= roadLength * segmentLength;
+        stageNumber++;
+    }
     while (camZ < 0) camZ += roadLength * segmentLength;
     float maxY = SCREEN_HEIGHT;
     int initPos = (int)(camZ / segmentLength);
@@ -164,6 +176,12 @@ void ModuleSceneBase::DrawTrack(const Segment* s1, const Segment* s2, bool color
     }
 }
 
+void ModuleSceneBase::DrawObjects(const Segment* s) {
+    if (s->spriteID != 0) {
+
+    }
+}
+
 void ModuleSceneBase::WorldToScreen(Segment &s, bool b) {
     float cameraX = s.wX - (int)(App->player->xPos - roadX);
     float cameraY = s.wY - camY;
@@ -196,14 +214,72 @@ bool ModuleSceneBase::CleanUp() {
     return true;
 }
 
-void ModuleSceneBase::SetUpGUIPos() {
-    speedPos.x = SCREEN_WIDTH - 20;
-    speedPos.y = 100;
+void ModuleSceneBase::SetUpGUI() {
+    speedNumberPos.x = SCREEN_WIDTH * 8 / 10 + 35;
+    speedNumberPos.y = SCREEN_HEIGHT / 8;
+
+    scorePos.x = SCREEN_WIDTH * 6 / 10;
+    scorePos.y = SCREEN_HEIGHT / 20;
+
+    timePos.x = SCREEN_WIDTH / 2 - time.w / 2;
+    timePos.y = SCREEN_HEIGHT / 20;
+
+    coursePos.x = SCREEN_WIDTH / 10;
+    coursePos.y = SCREEN_HEIGHT / 8;
+
+    stagePos.x = SCREEN_WIDTH / 10;
+    stagePos.y = SCREEN_HEIGHT / 6;
+
+    africaPos.x = SCREEN_WIDTH / 4 + 10;
+    africaPos.y = SCREEN_HEIGHT / 8;
+
+    topPos.x = SCREEN_WIDTH / 10;
+    topPos.y = SCREEN_HEIGHT / 20;
+
+    speedPos.x = SCREEN_WIDTH * 6 / 10 + 15;
+    speedPos.y = SCREEN_HEIGHT / 8;
+
+    kmPos.x = SCREEN_WIDTH * 8 / 10 + 35;
+    kmPos.y = SCREEN_HEIGHT / 8;
+
+    sgPos.x = SCREEN_WIDTH / 20;
+    sgPos.y = SCREEN_HEIGHT / 5 + 5;
+
+    topNumberPos.x = SCREEN_WIDTH / 2 - 80;
+    topNumberPos.y = SCREEN_HEIGHT / 20 + 3;
+
+    stageNumberPos.x = SCREEN_WIDTH / 4 + 25;
+    stageNumberPos.y = SCREEN_HEIGHT / 6;
+
+    countdownPos.x = SCREEN_WIDTH / 2 + 17;
+    countdownPos.y = SCREEN_HEIGHT / 8;
+
+    scoreNumberPos.x = SCREEN_WIDTH * 19 / 20;
+    scoreNumberPos.y = SCREEN_HEIGHT / 20;
 
     sky.x = 0;
     sky.y = 0;
     sky.w = SCREEN_WIDTH;
     sky.h = SCREEN_HEIGHT;
+}
+
+
+void ModuleSceneBase::DrawGUI() {
+    App->font->DrawText(App->font->redFont, to_string((int)App->player->speed).c_str(), speedNumberPos.x, speedNumberPos.y);
+    App->font->DrawText(App->font->greenFont, to_string((int)App->player->score).c_str(), scoreNumberPos.x, scoreNumberPos.y);
+    App->font->DrawText(App->font->countdownFont, to_string((int)countdown).c_str(), countdownPos.x, countdownPos.y);
+    App->font->DrawText(App->font->whiteFont, to_string((int)stageNumber).c_str(), stageNumberPos.x, stageNumberPos.y);
+    App->font->DrawText(App->font->redFont, to_string(App->topScore).c_str(), topNumberPos.x, topNumberPos.y);
+    App->renderer->Blit(guiTexture, scorePos.x, scorePos.y, &score,0);
+    App->renderer->Blit(guiTexture, timePos.x, timePos.y, &time,0);
+    App->renderer->Blit(guiTexture, coursePos.x, coursePos.y, &course,0);
+    App->renderer->Blit(guiTexture, stagePos.x, stagePos.y, &stage,0);
+    App->renderer->Blit(guiTexture, africaPos.x, africaPos.y, &africa,0);
+    App->renderer->Blit(guiTexture, topPos.x, topPos.y, &top, 0);
+    App->renderer->Blit(guiTexture, speedPos.x, speedPos.y, &speed, 0);
+    App->renderer->Blit(guiTexture, kmPos.x, kmPos.y, &km, 0);
+    App->renderer->Blit(guiTexture, sgPos.x, sgPos.y, &sg, 0);
+
 }
 
 void ModuleSceneBase::SetUpColors() {

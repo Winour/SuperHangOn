@@ -140,7 +140,7 @@ ModulePlayer::~ModulePlayer() {
 
 bool ModulePlayer::Start() {
     timer = speed = xPos = 0.0f;
-    state = 0;
+    state = score = 0;
     texture = App->textures->Load("sprites/map&players.png");
     textureFalls = App->textures->Load("sprites/falls.png");
     currentAnimation = &straight;
@@ -322,6 +322,11 @@ update_status ModulePlayer::Update(float deltaTime) {
         App->renderer->Blit(textureFalls, position.x - 40, position.y - 80, &currentAnimation->GetCurrentFrame(), 0,2.0f);
         fallSpeed = fallSpeed * 2 / 3;
     }
+    if (!outOfRoad) {
+        score += (int)(speed * speed * deltaTime / 40) * 10;
+    }
+    App->topScore = MAX(App->topScore, score);
+    
     return UPDATE_CONTINUE;
 }
 

@@ -31,6 +31,7 @@ public:
 public:
     float speed;
     float xPos = 0.0f;
+    unsigned int score;
 
 private:
     void RecalculatePos();

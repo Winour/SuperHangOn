@@ -30,13 +30,14 @@ private:
     void DrawRoad(float deltaTime);
     void DrawTrack(const Segment* s1, const Segment* s2, bool colorOne);
     void DrawBackground(float curve);
+    void DrawObjects(const Segment* s);
 
     void WorldToScreen(Segment &s, bool b);
     void RecalculatePosition(float speed);
 
     void Hill(const Segment* a, Segment* b, float value, float length, float height);
 
-    void SetUpGUIPos();
+    void SetUpGUI();
     void SetUpColors();
 
 public:
@@ -44,6 +45,8 @@ public:
 
 private:
     float timer;
+    float countdown;
+    int stageNumber;
 
 private: // Road
     SDL_Rect sky;
@@ -62,6 +65,7 @@ private: // Road
     unsigned int finishID;
     bool goal = false;
     SDL_Color roadColor, blueSky, white, greyDark, brownDark, brownLight;
+    std::vector<SDL_Rect*> objects;
 
 private: //Camera
     const float camDepth = CAMERA_DEPTH;
@@ -71,7 +75,31 @@ private: //Camera
     float offsetX = 0.0f;
 
 private: //GUI
+    SDL_Texture* guiTexture;
+    SDL_Rect score;
+    SDL_Rect time;
+    SDL_Rect course;
+    SDL_Rect stage;
+    SDL_Rect africa;
+    SDL_Rect top;
+    SDL_Rect speed;
+    SDL_Rect km;
+    SDL_Rect sg;
+
+    iPoint scorePos;
+    iPoint timePos;
+    iPoint coursePos;
+    iPoint stagePos;
+    iPoint africaPos;
+    iPoint topPos;
+    iPoint kmPos;
+    iPoint sgPos;
     iPoint speedPos;
+    iPoint speedNumberPos;
+    iPoint topNumberPos;
+    iPoint stageNumberPos;
+    iPoint countdownPos;
+    iPoint scoreNumberPos;
 };
 
 #endif // !__MODULESCENEBASE_H__
