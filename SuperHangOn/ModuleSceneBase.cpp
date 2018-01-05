@@ -19,6 +19,8 @@
 using namespace std;
 
 ModuleSceneBase::ModuleSceneBase(bool active) : Module(active) {
+    background = { 20, 61, 350, 275 };
+    mountains = { 668,98,625,28 };
 }
 
 
@@ -27,6 +29,7 @@ ModuleSceneBase::~ModuleSceneBase() {
 
 bool ModuleSceneBase::Start() {
     App->player->Enable();
+    textureBackground = App->textures->Load("sprites/backgrounds.png");
     SetUpGUIPos();
     SetUpColors();
     timer = 5.0f;
@@ -37,7 +40,7 @@ bool ModuleSceneBase::Start() {
         s->wY = (i > 0) ? (segments[i - 1])->wY : 0;
         if (i > 20) {
             s->curve = -3.0f;
-            Hill(segments[i-1], s, i, 60, 100);         // 15-60  /  70-130  GOOD VALUES
+            Hill(segments[i-1], s, i, 40, 100);         // 15-60  /  70-130  GOOD VALUES
         }
         segments.push_back(s);  
     }
@@ -90,6 +93,7 @@ update_status ModuleSceneBase::Update(float deltaTime) {
     RecalculatePosition(App->player->speed * deltaTime * 55);
     DrawRoad(deltaTime);
     DrawGUI();
+
     return UPDATE_CONTINUE;
 }
 
@@ -99,11 +103,12 @@ void ModuleSceneBase::DrawGUI() {
 }
 
 void ModuleSceneBase::DrawRoad(float deltaTime) {
-    while (camZ >= roadLength * 200) camZ -= roadLength * segmentLength;
+    while (camZ >= roadLength * segmentLength) camZ -= roadLength * segmentLength;
     while (camZ < 0) camZ += roadLength * segmentLength;
     float maxY = SCREEN_HEIGHT;
     int initPos = (int)(camZ / segmentLength);
     Segment* s = segments[initPos];
+    DrawBackground(s->curve*deltaTime);
     App->player->CentripetalForce(-s->curve * deltaTime);
     camY = (1500 + s->wY);
     offsetX = 0;
@@ -119,8 +124,10 @@ void ModuleSceneBase::DrawRoad(float deltaTime) {
             Segment *previousS = segments[(i - 1) % roadLength];
             DrawTrack((previousS), (thisS), ((i / 3) % 2 == 0));
         }
+
         
     }
+
 }
 
 void ModuleSceneBase::DrawTrack(const Segment* s1, const Segment* s2, bool colorOne) {
@@ -206,4 +213,19 @@ void ModuleSceneBase::SetUpColors() {
     greyDark = GREY_DARK;
     brownDark = BROWN_DARK;
     brownLight = BROWN_LIGHT;
+}
+
+void ModuleSceneBase::DrawBackground(float curve) {
+    int i = (int)(camZ / segmentLength) + segmentsToDraw - 5;
+    i = i%roadLength;
+    backgroundOffset -= curve * 1.5f;
+    mountainsOffset -= curve * 3.0f;
+    App->renderer->Blit(textureBackground, backgroundOffset, segments[i]->sY - 260, &background, 0);
+    App->renderer->Blit(textureBackground, -background.w + backgroundOffset, segments[i]->sY-260, &background, 0);
+    App->renderer->Blit(textureBackground, background.w + backgroundOffset, segments[i]->sY-260, &background, 0);
+    App->renderer->Blit(textureBackground, 2 * background.w + backgroundOffset, segments[i]->sY - 260, &background, 0);
+    App->renderer->Blit(textureBackground, 3 * background.w + backgroundOffset, segments[i]->sY - 260, &background, 0);
+    App->renderer->Blit(textureBackground, mountainsOffset, segments[i]->sY - mountains.h, &mountains,0);
+    App->renderer->Blit(textureBackground, -mountains.w + mountainsOffset, segments[i]->sY - mountains.h, &mountains,0);
+    App->renderer->Blit(textureBackground, mountains.w + mountainsOffset, segments[i]->sY - mountains.h, &mountains,0);
 }

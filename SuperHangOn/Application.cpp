@@ -66,7 +66,7 @@ bool Application::Init()
 	}
 
 	// Start the first scene --
-	fade->FadeToBlack(sceneMapSelection, nullptr, 0.5f);
+	fade->FadeToBlack(sceneAfrica, nullptr, 0.5f);
 
 	return ret;
 }

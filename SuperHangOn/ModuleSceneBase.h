@@ -29,6 +29,7 @@ private:
     void DrawGUI();
     void DrawRoad(float deltaTime);
     void DrawTrack(const Segment* s1, const Segment* s2, bool colorOne);
+    void DrawBackground(float curve);
 
     void WorldToScreen(Segment &s, bool b);
     void RecalculatePosition(float speed);
@@ -46,12 +47,17 @@ private:
 
 private: // Road
     SDL_Rect sky;
+    SDL_Texture* textureBackground = nullptr;
+    SDL_Rect background;
+    SDL_Rect mountains;
     std::vector<Segment*> segments;
     const float roadWidth = ROAD_WIDTH;
     const float segmentLength = SEGMENT_LENGTH;
     const int segmentsToDraw = 90;
     float roadX = 0.0f;
     float roadY = 0.0f;
+    float backgroundOffset = 0.0f;
+    float mountainsOffset = 0.0f;
     unsigned int roadLength = 0;
     unsigned int finishID;
     bool goal = false;

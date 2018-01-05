@@ -49,7 +49,7 @@ typedef unsigned int uint;
 #define GREY_DARK SDL_Color({140,138,140,255})
 #define BROWN_DARK SDL_Color({206,207,140,255})
 #define BROWN_LIGHT SDL_Color({239,239,173,255})
-#define BLUE_SKY SDL_Color({140,239,239,255});
+#define BLUE_SKY SDL_Color({128,224,224,255});
 
 // Configuration -----------
 #define SCREEN_SIZE 1
