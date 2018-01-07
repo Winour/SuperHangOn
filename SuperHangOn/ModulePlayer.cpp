@@ -140,7 +140,7 @@ ModulePlayer::~ModulePlayer() {
 
 bool ModulePlayer::Start() {
     timer = speed = xPos = 0.0f;
-    state = score = 0;
+    state = score = stateRace = 0;
     texture = App->textures->Load("sprites/map&players.png");
     textureFalls = App->textures->Load("sprites/falls.png");
     currentAnimation = &straight;
@@ -153,7 +153,8 @@ bool ModulePlayer::Start() {
 
 update_status ModulePlayer::Update(float deltaTime) {
     RecalculateAnimSpeed();
-    if (!fall) {
+
+    if (stateRace == RUNNING) {
         if (App->input->GetKey(SDL_SCANCODE_X) == KEY_REPEAT) {
             if (!outOfRoad) {
                 speed += deltaTime * ACCELERATION * 2;
@@ -176,92 +177,93 @@ update_status ModulePlayer::Update(float deltaTime) {
                 speed = IDLE_SPEED;
             }
         }
-    } else {
-        speed = 0;
     }
+
     if (App->input->GetKey(SDL_SCANCODE_0) == KEY_DOWN) {
         currentAnimation = &fastFall;
         fall = true;
-        fallSpeed = speed * 0.25f;
-    }
 
-    if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) {
-        if (xPos - dustPos.x + position.x * 3 > ROAD_WIDTH * 1.35f) {
-            outOfRoad = true;
-        } else if (xPos - dustPos.x + position.x < -ROAD_WIDTH* 1.4f) {
-            outOfRoad = true;
-        } else {
-            outOfRoad = false;
-        }
-        if (state != LEFT_THREE) {
-            timer += deltaTime;
-            if (timer >= SWAP_ANIM) {
-                animChange = true;
-                state--;
-                timer -= SWAP_ANIM;
+    }
+    if (stateRace == RUNNING) {
+        if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) {
+            if (xPos - dustPos.x + position.x * 3 > ROAD_WIDTH * 1.35f) {
+                outOfRoad = true;
+            } else if (xPos - dustPos.x + position.x < -ROAD_WIDTH* 1.4f) {
+                outOfRoad = true;
+            } else {
+                outOfRoad = false;
             }
-        }
-    } else if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) {
-        if (xPos - dustPos.x + position.x > ROAD_WIDTH * 1.35f) {
-            outOfRoad = true;
-        } else if (xPos - dustPos.x * 2 + position.x < -ROAD_WIDTH* 1.3f) {
-            outOfRoad = true;
-        } else {
-            outOfRoad = false;
-        }
-        if (state != RIGHT_THREE) {
+            if (state != LEFT_THREE) {
+                timer += deltaTime;
+                if (timer >= SWAP_ANIM) {
+                    animChange = true;
+                    state--;
+                    timer -= SWAP_ANIM;
+                }
+            }
+        } else if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) {
+            if (xPos - dustPos.x + position.x > ROAD_WIDTH * 1.35f) {
+                outOfRoad = true;
+            } else if (xPos - dustPos.x * 2 + position.x < -ROAD_WIDTH* 1.3f) {
+                outOfRoad = true;
+            } else {
+                outOfRoad = false;
+            }
+            if (state != RIGHT_THREE) {
+                timer += deltaTime;
+                if (timer >= SWAP_ANIM) {
+                    animChange = true;
+                    state++;
+                    timer -= SWAP_ANIM;
+                }
+            }
+        } else if (state < STRAIGHT) {
             timer += deltaTime;
+            if (xPos - dustPos.x + position.x > ROAD_WIDTH * 1.3f) {
+                outOfRoad = true;
+            } else if (xPos - dustPos.x + position.x < -ROAD_WIDTH* 1.3f) {
+                outOfRoad = true;
+            } else {
+                outOfRoad = false;
+            }
             if (timer >= SWAP_ANIM) {
                 animChange = true;
                 state++;
                 timer -= SWAP_ANIM;
             }
-        }
-    } else if (state < STRAIGHT) {
-        timer += deltaTime;
-        if (xPos - dustPos.x + position.x > ROAD_WIDTH * 1.3f) {
-            outOfRoad = true;
-        } else if (xPos - dustPos.x + position.x < -ROAD_WIDTH* 1.3f) {
-            outOfRoad = true;
+        } else if (state > STRAIGHT) {
+            timer += deltaTime;
+            if (xPos - dustPos.x + position.x > ROAD_WIDTH * 1.3f) {
+                outOfRoad = true;
+            } else if (xPos - dustPos.x + position.x < -ROAD_WIDTH* 1.3f) {
+                outOfRoad = true;
+            } else {
+                outOfRoad = false;
+            }
+            if (timer >= SWAP_ANIM) {
+                animChange = true;
+                state--;
+                timer -= SWAP_ANIM;
+            }
         } else {
-            outOfRoad = false;
-        }
-        if (timer >= SWAP_ANIM) {
-            animChange = true;
-            state++;
-            timer -= SWAP_ANIM;
-        }
-    } else if (state > STRAIGHT) {
-        timer += deltaTime;
-        if (xPos - dustPos.x + position.x > ROAD_WIDTH * 1.3f) {
-            outOfRoad = true;
-        } else if (xPos - dustPos.x + position.x < -ROAD_WIDTH* 1.3f) {
-            outOfRoad = true;
-        } else {
-            outOfRoad = false;
-        }
-        if (timer >= SWAP_ANIM) {
-            animChange = true;
-            state--;
-            timer -= SWAP_ANIM;
-        }
-    } else {
-        if (xPos - dustPos.x + position.x > ROAD_WIDTH * 1.3f) {
-            outOfRoad = true;
-        } else if (xPos - dustPos.x + position.x < -ROAD_WIDTH* 1.3f) {
-            outOfRoad = true;
-        } else {
-            outOfRoad = false;
+            if (xPos - dustPos.x + position.x > ROAD_WIDTH * 1.3f) {
+                outOfRoad = true;
+            } else if (xPos - dustPos.x + position.x < -ROAD_WIDTH* 1.3f) {
+                outOfRoad = true;
+            } else {
+                outOfRoad = false;
+            }
         }
     }
     xPos += deltaTime * speed * 8.0f * state;
+    
     if (xPos > MAX_X) {
         xPos = MAX_X;
     } else if (xPos< -MAX_X) {
         xPos = -MAX_X;
     }
 
-    if (animChange) {
+    if (animChange && stateRace == RUNNING) {
         animChange = false;
         switch (state) {
             case LEFT_THREE:
@@ -311,6 +313,18 @@ update_status ModulePlayer::Update(float deltaTime) {
             }
 
     }
+    collider = { SCREEN_WIDTH / 2 - currentAnimation->GetCurrentFrame().w / 2, SCREEN_HEIGHT - 10, currentAnimation->GetCurrentFrame().w, -currentAnimation->GetCurrentFrame().h };
+    if (stateRace == FALLING) {
+        if (speed > 150) {
+            currentAnimation = &fastFall;
+            fallSpeed = speed * 0.05f;
+        } else {
+            currentAnimation = &slowFall;
+            fallSpeed = speed * 0.05f;
+        }
+        speed = 0;
+        stateRace = ON_THE_FLOOR;
+    }
     if (!fall) {
         if (!outOfRoad) {
             App->renderer->Blit(texture, position.x, position.y, &currentAnimation->GetCurrentFrame(), 0);
@@ -320,7 +334,7 @@ update_status ModulePlayer::Update(float deltaTime) {
         }
     } else {
         position.y -= fallSpeed;
-        App->renderer->Blit(textureFalls, position.x - 40, position.y - 80, &currentAnimation->GetCurrentFrame(), 0,2.0f);
+        App->renderer->Blit(textureFalls, position.x - 40, position.y - 80, &currentAnimation->GetCurrentFrame(), 0,2.5f);
         fallSpeed = fallSpeed * 2 / 3;
     }
     if (!outOfRoad) {
@@ -347,5 +361,16 @@ void ModulePlayer::CentripetalForce(float value) {
 void ModulePlayer::RecalculateAnimSpeed() {
     if (!fall) {
         currentAnimation->speed = (speed / MAX_SPEED)/3;
+    }
+}
+
+void ModulePlayer::Collision(SDL_Rect object) {
+    App->renderer->DrawQuad(collider, 0, 0, 255, 100, false);
+    //if (!(collider.x > object.x + object.w || collider.x + collider.w < object.x || collider.y > object.y + object.h || collider.y + collider.h < object.y)) {
+    //    fall = true;
+    //}
+    if (!(collider.x > object.x + object.w || collider.x + collider.w < object.x) ) {
+        fall = true;
+        stateRace = FALLING;
     }
 }

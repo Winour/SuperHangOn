@@ -83,7 +83,6 @@ bool ModuleAudio::PlayMusic(const char* path, float fade_time)
 		{
 			Mix_HaltMusic();
 		}
-
 		// this call blocks until fade out is done
 		Mix_FreeMusic(music);
 	}
@@ -153,6 +152,10 @@ unsigned int ModuleAudio::LoadFx(const char* path)
 bool ModuleAudio::PlayFx(unsigned int id, float volume, int repeat)
 {
 	bool ret = false;
+    if (id != lastFxID) {
+        lastFxID = id;
+        Mix_HaltChannel(-1);
+    }
 
 	if(id < fx.size())
 	{   

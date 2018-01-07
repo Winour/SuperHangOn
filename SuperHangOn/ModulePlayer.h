@@ -8,6 +8,13 @@ class Animation;
 
 struct SDL_Texture;
 
+enum State {
+    IDLE,
+    RUNNING,
+    FALLING,
+    ON_THE_FLOOR
+};
+
 enum RunningStates {
     LEFT_THREE = -3,
     LEFT_TWO,
@@ -27,11 +34,15 @@ public:
     update_status Update(float deltaTime);
     bool CleanUp();
     void CentripetalForce(float value);
+    void Collision(SDL_Rect object);
 
 public:
     float speed;
     float xPos = 0.0f;
     unsigned int score;
+    bool outOfRoad = false;
+    int stateRace;
+    SDL_Rect collider;
 
 private:
     void RecalculatePos();
@@ -66,7 +77,6 @@ private:
     float timer, fallSpeed;
     bool animChange = false;
     bool fall = false;
-    bool outOfRoad = false;
 };
 
 #endif // !__MODULEPLAYER_H__

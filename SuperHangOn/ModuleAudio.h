@@ -31,6 +31,9 @@ public:
 	// Play a previously loaded WAV
 	bool PlayFx(unsigned int fx, float volume = 1.0f, int repeat = 0);
 
+public:
+    unsigned int lastFxID = 9999;
+
 private:
 
 	Mix_Music*	music = nullptr;

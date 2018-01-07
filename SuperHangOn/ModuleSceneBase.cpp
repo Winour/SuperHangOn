@@ -215,7 +215,9 @@ bool ModuleSceneBase::Start() {
     semaphoreFinalFX = App->audio->LoadFx("music/fxSemaphoreFinal.wav");
     loadTrackFX = App->audio->LoadFx("music/fxLoadTrack.wav");
     engineFX = App->audio->LoadFx("music/fxEngine.wav");
-
+    outOfRoadFX = App->audio->LoadFx("music/fxOutRoad.wav");
+    colisionFX = App->audio->LoadFx("music/fxColision.wav");
+    lapFX = App->audio->LoadFx("music/fxLap.wav");
 
     for (int i = 0; i < 1000; i++) {
         Segment* s = new Segment();
@@ -224,6 +226,7 @@ bool ModuleSceneBase::Start() {
         if (i == 8) {
             s->spriteID = startSignID;
             s->spriteX = 0;
+            s->collides = false;
         }
         if (i < 200) {
         } else if (i < 500) {
@@ -249,6 +252,7 @@ update_status ModuleSceneBase::Update(float deltaTime) {
     App->renderer->DrawQuad(sky, blueSky.r, blueSky.g, blueSky.b, blueSky.a, false);
     switch (state) {
         case Intro:
+            App->player->stateRace == IDLE;
             for (int i = 0; i < enemies.size(); i++) {
                 enemies[i]->currentAnimation->speed = 0.0f;
             }
@@ -268,7 +272,8 @@ update_status ModuleSceneBase::Update(float deltaTime) {
                 beamNumber = -5;
             }
             if (timer < 0.0f) {
-                nextState = Race;            
+                nextState = Race;          
+                App->player->stateRace = RUNNING;
                 for (int i = 0; i < enemies.size(); i++) {
                     enemies[i]->currentAnimation->speed = 0.25f;
                 }
@@ -293,8 +298,13 @@ update_status ModuleSceneBase::Update(float deltaTime) {
 
         case Race:
             countdown -= deltaTime;
-            RecalculatePosition(App->player->speed * deltaTime * 55);
-            App->audio->PlayFx(engineFX, (App->player->speed / MAX_SPEED) / 7);
+            RecalculatePosition(App->player->speed * deltaTime * 55);   
+            if (App->player->outOfRoad) {
+                App->audio->PlayFx(outOfRoadFX, (App->player->speed / MAX_SPEED) / 3);
+            } else {
+                App->audio->PlayFx(engineFX, (App->player->speed / MAX_SPEED) / 7);
+            }
+
             for (int i = enemies.size() - 1; i >= 0; i--) {
                 UpdateEnemy(enemies[i], deltaTime);
             }
@@ -409,6 +419,12 @@ void ModuleSceneBase::DrawObjects(const Segment* s) {
         }
         if (scale <= 2.5f) {
             App->renderer->Blit(textureObjects, destX - (sprite.w * scale)/2, (int)destY, &sprite, 0.0f, scale);
+        }     
+        int initPos = (int)(camZ / segmentLength);
+        if (s->collides && scale > 1 && App->player->stateRace == RUNNING) {
+            SDL_Rect collision = { destX - (sprite.w * scale) / 2, destY + sprite.h * scale,sprite.w * scale, -destH };
+            App->renderer->DrawQuad(collision, 255, 0, 0, 100, false);
+            App->player->Collision(collision);
         }
     }
 }
@@ -427,10 +443,18 @@ void ModuleSceneBase::DrawEnemy(const Enemy* e) {
     if (scale <= 1.5f) {
         App->renderer->Blit(guiTexture, destX - (sprite.w * scale) / 2, (int)destY, &sprite, 0.0f, scale);
     }
+    int initPos = (int)(camZ / segmentLength);
+    if (e->z > initPos + 1 && scale > 1) {
+        SDL_Rect collision = { destX - (sprite.w * scale) / 2, destY + sprite.h * scale,sprite.w * scale, -destH };
+        App->renderer->DrawQuad(collision, 255, 0, 0, 100, false);
+        App->player->Collision(collision);
+    }
+
 }
 
 void ModuleSceneBase::UpdateEnemy(Enemy* e, float deltaTime) {
     e->z += e->speed * deltaTime;
+    while (e->z < 0) e->z += roadLength * segmentLength;
     Segment* s = segments[(int)e->z % roadLength];
     if (s->curve > 3.0f) {
         if (e->state != 3) {
