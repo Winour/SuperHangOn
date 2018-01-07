@@ -33,7 +33,7 @@ ModuleSceneBase::ModuleSceneBase(bool active) : Module(active) {
 
     greenStraight.frames.push_back({ 180,878, 67,147 });
     greenStraight.frames.push_back({ 256,878, 67,147 });
-    greenStraight.speed = 0.2f;
+    greenStraight.speed = 0.02f;
     greenStraight.loop = true;
 
     greenLeftOne.frames.push_back({ 336,888, 73,137 });
@@ -68,7 +68,7 @@ ModuleSceneBase::ModuleSceneBase(bool active) : Module(active) {
 
     yellowStraight.frames.push_back({ 180,1038, 67,147 });
     yellowStraight.frames.push_back({ 256,1038, 67,147 });
-    yellowStraight.speed = 0.2f;
+    yellowStraight.speed = 0.02f;
     yellowStraight.loop = true;
 
     yellowLeftOne.frames.push_back({ 336,1042, 73,147 });
@@ -91,8 +91,8 @@ ModuleSceneBase::ModuleSceneBase(bool active) : Module(active) {
     yellowRightOne.speed = 0.2f;
     yellowRightOne.loop = true;
 
-    yellowRightTwo.frames.push_back({ 584, 1230, 93, 127 });
-    yellowRightTwo.frames.push_back({ 686, 1230, 93, 127 });
+    yellowRightTwo.frames.push_back({ 584, 1390, 93, 127 });
+    yellowRightTwo.frames.push_back({ 686, 1390, 93, 127 });
     yellowRightTwo.speed = 0.2f;
     yellowRightTwo.loop = true;
 
@@ -150,28 +150,64 @@ ModuleSceneBase::~ModuleSceneBase() {
 
 bool ModuleSceneBase::Start() {
     App->player->Enable();
-    test = new Enemy();
-    test->currentAnimation = &yellowLeftThree;
-    test->isYellow = true;
-    test->speed = 5.0f;
-    test->x = 0.4f;
-    test->z = 60;
     textureBackground = App->textures->Load("sprites/backgrounds.png");
     guiTexture = App->textures->Load("sprites/map&players.png");
     textureObjects = App->textures->Load("sprites/decoration.png");
     SetUpGUI();
     SetUpColors();
     stageNumber = 1;
-    timer = 5.0f;
+    timer = 15.0f;
     countdown = 50.0f;
     state = nextState = Intro;
+
+    Enemy* e = new Enemy;
+    e->x = 0.0f;
+    e->z = 6;
+    e->isYellow = true;
+    e->speed = 50.0f;
+    e->currentAnimation = &yellowStraight;
+    enemies.push_back(e);
+    e = new Enemy;
+    e->x = -0.35f;
+    e->z = 5;
+    e->isYellow = false;
+    e->speed = 50.0f;
+    e->currentAnimation = &greenStraight;
+    enemies.push_back(e);
+    e = new Enemy;
+    e->x = 0.35f;
+    e->z = 5;
+    e->isYellow = false;
+    e->speed = 50.0f;
+    e->currentAnimation = &greenStraight;
+    enemies.push_back(e);
+    e = new Enemy;
+    e->x = 0.65f;
+    e->z = 4;
+    e->isYellow = true;
+    e->speed = 50.0f;
+    e->currentAnimation = &yellowStraight;
+    enemies.push_back(e);
+    e = new Enemy;
+    e->x = -0.65f;
+    e->z = 4;
+    e->isYellow = true;
+    e->speed = 50.0f;
+    e->currentAnimation = &yellowStraight;
+    enemies.push_back(e);
     for (int i = 0; i < 1000; i++) {
         Segment* s = new Segment();
         s->wZ = i * segmentLength;
         s->wY = (i > 0) ? (segments[i - 1])->wY : 0;
-        s->curve = 5.0f;
+        if (i < 200) {
+        } else if (i < 500) {
+            s->curve = -5.0f;
+        } else {
+            s->curve = 0.0f;
+        }
+
         if (i > 20) {
-            Hill(segments[i - 1], s, i, 50, 90);
+            //Hill(segments[i - 1], s, i, 50, 90);
         }
         if (i % 50 == 0) {
             s->spriteID = 0;
@@ -188,6 +224,7 @@ update_status ModuleSceneBase::Update(float deltaTime) {
     switch (state) {
         case Intro:
             timer -= deltaTime;
+            App->player->speed = 0.0f;
             if (timer < 0.0f) {
                 nextState = Race;
                 switch (App->musicSelected) {
@@ -211,6 +248,10 @@ update_status ModuleSceneBase::Update(float deltaTime) {
 
         case Race:
             countdown -= deltaTime;
+            RecalculatePosition(App->player->speed * deltaTime * 55);
+            for (int i = enemies.size() - 1; i >= 0; i--) {
+                UpdateEnemy(enemies[i], deltaTime);
+            }
             break;
 
         case Finish:
@@ -226,7 +267,6 @@ update_status ModuleSceneBase::Update(float deltaTime) {
 
     }
     state = nextState;
-    RecalculatePosition(App->player->speed * deltaTime * 55);
     DrawRoad(deltaTime);
     DrawGUI();
     return UPDATE_CONTINUE;
@@ -265,10 +305,10 @@ void ModuleSceneBase::DrawRoad(float deltaTime) {
         DrawObjects(segments[i%roadLength]);
     }
     //Draw Enemies
-    //for (int i = enemies.size(); i > 0; i--){
-    //    
-    //}
-    DrawEnemy(test);
+    for (int i = enemies.size() - 1; i >= 0; i--){
+        DrawEnemy(enemies[i]);
+    }
+
 
 }
 
@@ -325,16 +365,152 @@ void ModuleSceneBase::DrawObjects(const Segment* s) {
 void ModuleSceneBase::DrawEnemy(const Enemy* e) { 
     Segment* s = segments[(int)e->z % roadLength];
     SDL_Rect sprite = e->currentAnimation->GetCurrentFrame();
-    float scale = s->sZ / SEGMENT_LENGTH;
-    float destY = s->sY - sprite.h * scale;
+    float scale = s->sZ / (SEGMENT_LENGTH + 90);
+    float destY = s->sY - sprite.h * scale + 3;
     float destX = s->sX + (s->sZ * e->x);
     int destH = (int)(sprite.h * scale);
     if (destY + destH > s->cc) {
         float clipH = destY + destH - s->cc;
         sprite.h = (int)(sprite.h - sprite.h * clipH / destH);
     }
-    if (scale <= 2.0f) {
+    if (scale <= 1.5f) {
         App->renderer->Blit(guiTexture, destX - (sprite.w * scale) / 2, (int)destY, &sprite, 0.0f, scale);
+    }
+}
+
+void ModuleSceneBase::UpdateEnemy(Enemy* e, float deltaTime) {
+    e->z += e->speed * deltaTime;
+    Segment* s = segments[(int)e->z % roadLength];
+    if (s->curve > 3.0f) {
+        if (e->state != 3) {
+            e->timeOnAnim += deltaTime;
+            if (e->timeOnAnim > SWAP_ANIM) {
+                e->state++;
+                e->timeOnAnim = 0.0f;
+            }
+        }
+    } else if (s->curve > 1.5f) {
+        if (e->state != 2) {
+            e->timeOnAnim += deltaTime;
+            if (e->timeOnAnim > SWAP_ANIM) {
+                if (e->state > 2) {
+                    e->state--;
+                } else {
+                    e->state++;
+                }
+                e->timeOnAnim = 0.0f;
+            }
+
+        }
+    } else if (s->curve > 0.0f) {
+        if (e->state != 1) {
+            e->timeOnAnim += deltaTime;
+            if (e->timeOnAnim > SWAP_ANIM) {
+                if (e->state > 1) {
+                    e->state--;
+                } else {
+                    e->state++;
+                }
+                e->timeOnAnim = 0.0f;
+            }
+        }
+    } else if (s->curve == 0.0f) {
+        if (e->state != 0) {
+            e->timeOnAnim += deltaTime;
+            if (e->timeOnAnim > SWAP_ANIM) {
+                if (e->state > 0) {
+                    e->state--;
+                } else {
+                    e->state++;
+                }
+                e->timeOnAnim = 0.0f;
+            }
+        }
+    } else if (s->curve > 1.5f) {
+        if (e->state != -1) {
+            e->timeOnAnim += deltaTime;
+            if (e->timeOnAnim > SWAP_ANIM) {
+                if (e->state > -1) {
+                    e->state--;
+                } else {
+                    e->state++;
+                }
+                e->timeOnAnim = 0.0f;
+            }
+        }
+    } else if (s->curve > -3.0f) {
+        if (e->state != -2) {
+            e->timeOnAnim += deltaTime;
+            if (e->timeOnAnim > SWAP_ANIM) {
+                if (e->state > -2) {
+                    e->state--;
+                } else {
+                    e->state++;
+                }
+                e->timeOnAnim = 0.0f;
+            }
+        }
+    } else {
+        if (e->state != -3) {
+            e->timeOnAnim += deltaTime;
+            if (e->timeOnAnim > SWAP_ANIM) {
+                e->state--;
+                e->timeOnAnim = 0.0f;
+            }
+        }
+    }
+    if (e->isYellow) {
+        switch (e->state) {
+        case LEFT_THREE:
+            e->currentAnimation = &yellowLeftThree;
+            break;
+        case LEFT_TWO:
+            e->currentAnimation = &yellowLeftTwo;
+            break;
+        case LEFT_ONE:
+            e->currentAnimation = &yellowLeftOne;
+            break;
+        case STRAIGHT:
+            e->currentAnimation = &yellowStraight;
+            break;
+        case RIGHT_ONE:
+            e->currentAnimation = &yellowRightOne;
+            break;
+        case RIGHT_TWO:
+            e->currentAnimation = &yellowRightTwo;
+            break;
+        case RIGHT_THREE:
+            e->currentAnimation = &yellowRightThree;
+            break;
+        default:
+            break;
+        }
+    } else {
+        switch (e->state) {
+        case LEFT_THREE:
+            e->currentAnimation = &greenLeftThree;
+            break;
+        case LEFT_TWO:
+            e->currentAnimation = &greenLeftTwo;
+            break;
+        case LEFT_ONE:
+            e->currentAnimation = &greenLeftOne;
+            break;
+        case STRAIGHT:
+            e->currentAnimation = &greenStraight;
+            break;
+        case RIGHT_ONE:
+            e->currentAnimation = &greenRightOne;
+            break;
+        case RIGHT_TWO:
+            e->currentAnimation = &greenRightTwo;
+            break;
+        case RIGHT_THREE:
+            e->currentAnimation = &greenRightThree;
+            break;
+        default:
+            break;
+        }
     }
 }
 
@@ -435,7 +611,6 @@ void ModuleSceneBase::DrawGUI() {
     App->renderer->Blit(guiTexture, speedPos.x, speedPos.y, &speed, 0);
     App->renderer->Blit(guiTexture, kmPos.x, kmPos.y, &km, 0);
     App->renderer->Blit(guiTexture, sgPos.x, sgPos.y, &sg, 0);
-
 }
 
 void ModuleSceneBase::SetUpColors() {

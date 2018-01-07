@@ -17,11 +17,23 @@ enum States {
 };
 
 struct Enemy {
+    enum RunningStates {
+        LEFT_THREE = -3,
+        LEFT_TWO,
+        LEFT_ONE,
+        STRAIGHT,
+        RIGHT_ONE,
+        RIGHT_TWO,
+        RIGHT_THREE,
+    };
+    int state = STRAIGHT;
     Animation* currentAnimation = nullptr;
     bool isYellow = false;
     float x = 0;
     float z = 0;
-    float speed;
+    float speed = 90.0f;
+    float timer = 0.0f;
+    float timeOnAnim = 0.0f;
 };
 
 class ModuleSceneBase : public Module {
@@ -42,6 +54,7 @@ private:
 
     void WorldToScreen(Segment &s, bool b);
     void RecalculatePosition(float speed);
+    void UpdateEnemy(Enemy* e, float deltaTime);
 
     void Hill(const Segment* a, Segment* b, float value, float length, float height);
 
@@ -58,8 +71,6 @@ private:
 
 private: //Enemy
     std::vector<Enemy*> enemies;
-
-    Enemy* test;
 
     Animation greenStraight;
     Animation greenLeftOne;
