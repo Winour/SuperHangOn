@@ -31,6 +31,76 @@ ModuleSceneBase::ModuleSceneBase(bool active) : Module(active) {
     km = { 367 , 441 , 34 , 18 };
     sg = { 33 , 467 , 226 , 18 };
 
+    greenStraight.frames.push_back({ 180,878, 67,147 });
+    greenStraight.frames.push_back({ 256,878, 67,147 });
+    greenStraight.speed = 0.2f;
+    greenStraight.loop = true;
+
+    greenLeftOne.frames.push_back({ 336,888, 73,137 });
+    greenLeftOne.frames.push_back({ 412,888, 73,137 });
+    greenLeftOne.speed = 0.2f;
+    greenLeftOne.loop = true;
+
+    greenLeftTwo.frames.push_back({ 486,898, 93,127 });
+    greenLeftTwo.frames.push_back({ 588,898, 93,127 });
+    greenLeftTwo.speed = 0.2f;
+    greenLeftTwo.loop = true;
+
+    greenLeftThree.frames.push_back({ 688,914,127,111 });
+    greenLeftThree.frames.push_back({ 818,914,127,111 });
+    greenLeftThree.speed = 0.2f;
+    greenLeftThree.loop = true;
+
+    greenRightOne.frames.push_back({ 782, 1224, 73, 137 });
+    greenRightOne.frames.push_back({ 858, 1224, 73, 137 });
+    greenRightOne.speed = 0.2f;
+    greenRightOne.loop = true;
+
+    greenRightTwo.frames.push_back({ 584, 1230, 93, 127 });
+    greenRightTwo.frames.push_back({ 686, 1230, 93, 127 });
+    greenRightTwo.speed = 0.2f;
+    greenRightTwo.loop = true;
+
+    greenRightThree.frames.push_back({ 450,1246,127,111 });
+    greenRightThree.frames.push_back({ 320,1246,127,111 });
+    greenRightThree.speed = 0.2f;
+    greenRightThree.loop = true;
+
+    yellowStraight.frames.push_back({ 180,1038, 67,147 });
+    yellowStraight.frames.push_back({ 256,1038, 67,147 });
+    yellowStraight.speed = 0.2f;
+    yellowStraight.loop = true;
+
+    yellowLeftOne.frames.push_back({ 336,1042, 73,147 });
+    yellowLeftOne.frames.push_back({ 412,1042, 73,147 });
+    yellowLeftOne.speed = 0.2f;
+    yellowLeftOne.loop = true;
+
+    yellowLeftTwo.frames.push_back({ 486,1058, 93,127 });
+    yellowLeftTwo.frames.push_back({ 588,1058, 93,127 });
+    yellowLeftTwo.speed = 0.2f;
+    yellowLeftTwo.loop = true;
+
+    yellowLeftThree.frames.push_back({ 688,1074,127,111 });
+    yellowLeftThree.frames.push_back({ 818,1074,127,111 });
+    yellowLeftThree.speed = 0.2f;
+    yellowLeftThree.loop = true;
+
+    yellowRightOne.frames.push_back({ 782, 1374, 73, 147 });
+    yellowRightOne.frames.push_back({ 858, 1374, 73, 147 });
+    yellowRightOne.speed = 0.2f;
+    yellowRightOne.loop = true;
+
+    yellowRightTwo.frames.push_back({ 584, 1230, 93, 127 });
+    yellowRightTwo.frames.push_back({ 686, 1230, 93, 127 });
+    yellowRightTwo.speed = 0.2f;
+    yellowRightTwo.loop = true;
+
+    yellowRightThree.frames.push_back({ 320,1406,127,111 });
+    yellowRightThree.frames.push_back({ 450,1406,127,111 });
+    yellowRightThree.speed = 0.2f;
+    yellowRightThree.loop = true;
+
     SDL_Rect r;
     r = { 649, 0, 138, 209 };
     objects.push_back(r);
@@ -80,6 +150,12 @@ ModuleSceneBase::~ModuleSceneBase() {
 
 bool ModuleSceneBase::Start() {
     App->player->Enable();
+    test = new Enemy();
+    test->currentAnimation = &yellowLeftThree;
+    test->isYellow = true;
+    test->speed = 5.0f;
+    test->x = 0.4f;
+    test->z = 60;
     textureBackground = App->textures->Load("sprites/backgrounds.png");
     guiTexture = App->textures->Load("sprites/map&players.png");
     textureObjects = App->textures->Load("sprites/decoration.png");
@@ -153,7 +229,6 @@ update_status ModuleSceneBase::Update(float deltaTime) {
     RecalculatePosition(App->player->speed * deltaTime * 55);
     DrawRoad(deltaTime);
     DrawGUI();
-
     return UPDATE_CONTINUE;
 }
 
@@ -172,6 +247,7 @@ void ModuleSceneBase::DrawRoad(float deltaTime) {
     camY = (1500 + s->wY);
     offsetX = 0;
     roadX = 0;
+    // Draw Road
     for (int i = initPos + 1; i < initPos + segmentsToDraw; ++i) {
         Segment *thisS = segments[i%roadLength];
         WorldToScreen(*thisS, (i >= (int)roadLength));
@@ -184,9 +260,16 @@ void ModuleSceneBase::DrawRoad(float deltaTime) {
             DrawTrack((previousS), (thisS), ((i / 3) % 2 == 0));
         }      
     }
-    for (int n = initPos + 100; n >= initPos; n--) {
-        DrawObjects(segments[n%roadLength]);
+    //Draw Objects
+    for (int i = initPos + 100; i >= initPos; i--) {
+        DrawObjects(segments[i%roadLength]);
     }
+    //Draw Enemies
+    //for (int i = enemies.size(); i > 0; i--){
+    //    
+    //}
+    DrawEnemy(test);
+
 }
 
 void ModuleSceneBase::DrawTrack(const Segment* s1, const Segment* s2, bool colorOne) {
@@ -223,20 +306,35 @@ void ModuleSceneBase::DrawTrack(const Segment* s1, const Segment* s2, bool color
 }
 
 void ModuleSceneBase::DrawObjects(const Segment* s) {
-
     if (s->spriteID != 999) {
         SDL_Rect sprite = objects[s->spriteID];
-        float scaling = s->sZ / SEGMENT_LENGTH;
-        float destY = s->sY - sprite.h * scaling;
+        float scale = s->sZ / SEGMENT_LENGTH;
+        float destY = s->sY - sprite.h * scale;
         float destX = s->sX + (s->sZ * s->spriteX);
-        int destH = (int)(sprite.h * scaling);
+        int destH = (int)(sprite.h * scale);
         if (destY + destH > s->cc) {
             float clipH = destY + destH - s->cc;
             sprite.h = (int)(sprite.h - sprite.h * clipH / destH);
         }
-        if (scaling <= 2.5f) {
-            App->renderer->Blit(textureObjects, destX - (sprite.w * scaling)/2, (int)destY, &sprite, 0.0f, scaling);
+        if (scale <= 2.5f) {
+            App->renderer->Blit(textureObjects, destX - (sprite.w * scale)/2, (int)destY, &sprite, 0.0f, scale);
         }
+    }
+}
+
+void ModuleSceneBase::DrawEnemy(const Enemy* e) { 
+    Segment* s = segments[(int)e->z % roadLength];
+    SDL_Rect sprite = e->currentAnimation->GetCurrentFrame();
+    float scale = s->sZ / SEGMENT_LENGTH;
+    float destY = s->sY - sprite.h * scale;
+    float destX = s->sX + (s->sZ * e->x);
+    int destH = (int)(sprite.h * scale);
+    if (destY + destH > s->cc) {
+        float clipH = destY + destH - s->cc;
+        sprite.h = (int)(sprite.h - sprite.h * clipH / destH);
+    }
+    if (scale <= 2.0f) {
+        App->renderer->Blit(guiTexture, destX - (sprite.w * scale) / 2, (int)destY, &sprite, 0.0f, scale);
     }
 }
 

@@ -16,6 +16,14 @@ enum States {
     GameOver
 };
 
+struct Enemy {
+    Animation* currentAnimation = nullptr;
+    bool isYellow = false;
+    float x = 0;
+    float z = 0;
+    float speed;
+};
+
 class ModuleSceneBase : public Module {
 public:
     ModuleSceneBase(bool active = true);
@@ -47,6 +55,29 @@ private:
     float timer;
     float countdown;
     int stageNumber;
+
+private: //Enemy
+    std::vector<Enemy*> enemies;
+
+    Enemy* test;
+
+    Animation greenStraight;
+    Animation greenLeftOne;
+    Animation greenLeftTwo;
+    Animation greenLeftThree;
+    Animation greenRightOne;
+    Animation greenRightTwo;
+    Animation greenRightThree;
+
+    Animation yellowStraight;
+    Animation yellowLeftOne;
+    Animation yellowLeftTwo;
+    Animation yellowLeftThree;
+    Animation yellowRightOne;
+    Animation yellowRightTwo;
+    Animation yellowRightThree;
+
+    void DrawEnemy(const Enemy* e);
 
 private: // Road
     SDL_Rect sky;
