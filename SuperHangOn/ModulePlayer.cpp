@@ -86,12 +86,12 @@ ModulePlayer::ModulePlayer(bool active) : Module(active) {
     turboStraight.loop = true;
     turboStraight.speed = 0.04f;
 
-    dust.frames.push_back({ 1285,56,28,13 });
+    dust.frames.push_back({ 1285,56,28,50 });
     dust.frames.push_back({ 1317,44,43,25 });
     dust.frames.push_back({ 1363,19,45,50 });
     dust.frames.push_back({ 1238,12,41,56 });
     dust.loop = true;
-    dust.speed = 0.5f;
+    dust.speed = 0.2f;
 
     slowFall.frames.push_back({ 0, 0, 220, 124 });
     slowFall.frames.push_back({ 220, 0, 220, 124 });
@@ -152,6 +152,7 @@ bool ModulePlayer::Start() {
 }
 
 update_status ModulePlayer::Update(float deltaTime) {
+    RecalculateAnimSpeed();
     if (!fall) {
         if (App->input->GetKey(SDL_SCANCODE_X) == KEY_REPEAT) {
             if (!outOfRoad) {
@@ -341,4 +342,10 @@ void ModulePlayer::RecalculatePos() {
 
 void ModulePlayer::CentripetalForce(float value) {
     xPos += 3 * value * speed * speed / MAX_SPEED;
+}
+
+void ModulePlayer::RecalculateAnimSpeed() {
+    if (!fall) {
+        currentAnimation->speed = (speed / MAX_SPEED)/3;
+    }
 }

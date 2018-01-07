@@ -214,6 +214,7 @@ bool ModuleSceneBase::Start() {
     semaphoreFX = App->audio->LoadFx("music/fxSemaphoreOne.wav");
     semaphoreFinalFX = App->audio->LoadFx("music/fxSemaphoreFinal.wav");
     loadTrackFX = App->audio->LoadFx("music/fxLoadTrack.wav");
+    engineFX = App->audio->LoadFx("music/fxEngine.wav");
 
 
     for (int i = 0; i < 1000; i++) {
@@ -248,6 +249,9 @@ update_status ModuleSceneBase::Update(float deltaTime) {
     App->renderer->DrawQuad(sky, blueSky.r, blueSky.g, blueSky.b, blueSky.a, false);
     switch (state) {
         case Intro:
+            for (int i = 0; i < enemies.size(); i++) {
+                enemies[i]->currentAnimation->speed = 0.0f;
+            }
             timer -= deltaTime;
             timerSemaphore += deltaTime;
             App->player->speed = 0.0f;
@@ -264,7 +268,10 @@ update_status ModuleSceneBase::Update(float deltaTime) {
                 beamNumber = -5;
             }
             if (timer < 0.0f) {
-                nextState = Race;
+                nextState = Race;            
+                for (int i = 0; i < enemies.size(); i++) {
+                    enemies[i]->currentAnimation->speed = 0.25f;
+                }
                 switch (App->musicSelected) {
                     case 0:
                         App->audio->PlayMusic("music/2OutrideaCrisis.ogg", 0.f);
@@ -287,6 +294,7 @@ update_status ModuleSceneBase::Update(float deltaTime) {
         case Race:
             countdown -= deltaTime;
             RecalculatePosition(App->player->speed * deltaTime * 55);
+            App->audio->PlayFx(engineFX, (App->player->speed / MAX_SPEED) / 7);
             for (int i = enemies.size() - 1; i >= 0; i--) {
                 UpdateEnemy(enemies[i], deltaTime);
             }

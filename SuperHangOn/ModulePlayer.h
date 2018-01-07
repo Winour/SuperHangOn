@@ -35,6 +35,7 @@ public:
 
 private:
     void RecalculatePos();
+    void RecalculateAnimSpeed();
 
 private:
     SDL_Texture* texture = nullptr;
@@ -64,7 +65,6 @@ private:
     int state;
     float timer, fallSpeed;
     bool animChange = false;
-    bool turbo = false;
     bool fall = false;
     bool outOfRoad = false;
 };

@@ -114,7 +114,7 @@ private: // Road
     Animation semaphore;
 
 private: //Sounds
-    unsigned int semaphoreFX, semaphoreFinalFX, loadTrackFX;
+    unsigned int semaphoreFX, semaphoreFinalFX, loadTrackFX, engineFX;
 
 private: //Camera
     const float camDepth = CAMERA_DEPTH;
