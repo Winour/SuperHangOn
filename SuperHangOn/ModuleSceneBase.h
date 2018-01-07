@@ -51,6 +51,7 @@ private:
 private: // Road
     SDL_Rect sky;
     SDL_Texture* textureBackground = nullptr;
+    SDL_Texture* textureObjects = nullptr;
     SDL_Rect background;
     SDL_Rect mountains;
     std::vector<Segment*> segments;
@@ -65,7 +66,8 @@ private: // Road
     unsigned int finishID;
     bool goal = false;
     SDL_Color roadColor, blueSky, white, greyDark, brownDark, brownLight;
-    std::vector<SDL_Rect*> objects;
+    std::vector<SDL_Rect> objects;
+    unsigned int bushID, signLeftID, signRightID, barrelID, bidalStoneID, rockID, startSignID, checkSignID, goalSignID, peopleID;
 
 private: //Camera
     const float camDepth = CAMERA_DEPTH;

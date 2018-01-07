@@ -31,6 +31,47 @@ ModuleSceneBase::ModuleSceneBase(bool active) : Module(active) {
     km = { 367 , 441 , 34 , 18 };
     sg = { 33 , 467 , 226 , 18 };
 
+    SDL_Rect r;
+    r = { 649, 0, 138, 209 };
+    objects.push_back(r);
+    bushID = objects.size() - 1;
+
+    r = { 961, 31, 173, 122 };
+    objects.push_back(r);
+    signLeftID = objects.size() - 1;
+
+    r = { 1164, 28, 173, 126 };
+    objects.push_back(r);
+    signRightID = objects.size() - 1;
+
+    r = { 1517, 178, 175, 170 };
+    objects.push_back(r);
+    barrelID = objects.size() - 1;
+
+    r = { 1377, 37, 431, 120 };
+    objects.push_back(r);
+    bidalStoneID = objects.size() - 1;
+
+    r = { 1290, 358, 356, 168 };
+    objects.push_back(r);
+    rockID = objects.size() - 1;
+
+    r = { 17, 426, 834, 278 };
+    objects.push_back(r);
+    startSignID = objects.size() - 1;
+
+    r = { 13, 721, 840, 279 };
+    objects.push_back(r);
+    checkSignID = objects.size() - 1;
+
+    r = { 7, 1003, 852, 311 };
+    objects.push_back(r);
+    goalSignID = objects.size() - 1;
+
+    r = { 21, 1357, 548, 184 };
+    objects.push_back(r);
+    peopleID = objects.size() - 1;
+
 }
 
 
@@ -41,6 +82,7 @@ bool ModuleSceneBase::Start() {
     App->player->Enable();
     textureBackground = App->textures->Load("sprites/backgrounds.png");
     guiTexture = App->textures->Load("sprites/map&players.png");
+    textureObjects = App->textures->Load("sprites/decoration.png");
     SetUpGUI();
     SetUpColors();
     stageNumber = 1;
@@ -51,8 +93,13 @@ bool ModuleSceneBase::Start() {
         Segment* s = new Segment();
         s->wZ = i * segmentLength;
         s->wY = (i > 0) ? (segments[i - 1])->wY : 0;
+        s->curve = 5.0f;
+        if (i > 20) {
+            Hill(segments[i - 1], s, i, 50, 90);
+        }
         if (i % 50 == 0) {
-            s->spriteID = 1;
+            s->spriteID = 0;
+            s->spriteX = 2;
         }
                                                      // 15-60  /  70-130  GOOD VALUES
         segments.push_back(s);  
@@ -135,11 +182,11 @@ void ModuleSceneBase::DrawRoad(float deltaTime) {
             maxY = thisS->sY;
             Segment *previousS = segments[(i - 1) % roadLength];
             DrawTrack((previousS), (thisS), ((i / 3) % 2 == 0));
-        }
-
-        
+        }      
     }
-
+    for (int n = initPos + 100; n >= initPos; n--) {
+        DrawObjects(segments[n%roadLength]);
+    }
 }
 
 void ModuleSceneBase::DrawTrack(const Segment* s1, const Segment* s2, bool colorOne) {
@@ -172,13 +219,24 @@ void ModuleSceneBase::DrawTrack(const Segment* s1, const Segment* s2, bool color
 
         App->renderer->DrawSegment(greyDark, p1x - p1w - (Sint16)(p1w * SMALL_RUMBLE_PROPORTION) - (Sint16)(p1w * BIG_RUMBLE_PROPORTION), p1y, (Sint16)(p1w * BIG_RUMBLE_PROPORTION), p2x - p2w - (Sint16)(p2w * SMALL_RUMBLE_PROPORTION) - (Sint16)(p2w * BIG_RUMBLE_PROPORTION), p2y, (Sint16)(p2w * BIG_RUMBLE_PROPORTION));
         App->renderer->DrawSegment(greyDark, p1x + p1w + (Sint16)(p1w * SMALL_RUMBLE_PROPORTION) + (Sint16)(p1w * BIG_RUMBLE_PROPORTION), p1y, (Sint16)(p1w * BIG_RUMBLE_PROPORTION), p2x + p2w + (Sint16)(p2w * SMALL_RUMBLE_PROPORTION) + (Sint16)(p2w * BIG_RUMBLE_PROPORTION), p2y, (Sint16)(p2w * BIG_RUMBLE_PROPORTION));
-
     }
 }
 
 void ModuleSceneBase::DrawObjects(const Segment* s) {
-    if (s->spriteID != 0) {
 
+    if (s->spriteID != 999) {
+        SDL_Rect sprite = objects[s->spriteID];
+        float scaling = s->sZ / SEGMENT_LENGTH;
+        float destY = s->sY - sprite.h * scaling;
+        float destX = s->sX + (s->sZ * s->spriteX);
+        int destH = (int)(sprite.h * scaling);
+        if (destY + destH > s->cc) {
+            float clipH = destY + destH - s->cc;
+            sprite.h = (int)(sprite.h - sprite.h * clipH / destH);
+        }
+        if (scaling <= 2.5f) {
+            App->renderer->Blit(textureObjects, destX - (sprite.w * scaling)/2, (int)destY, &sprite, 0.0f, scaling);
+        }
     }
 }
 
