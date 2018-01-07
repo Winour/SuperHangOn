@@ -31,9 +31,18 @@ ModuleSceneBase::ModuleSceneBase(bool active) : Module(active) {
     km = { 367 , 441 , 34 , 18 };
     sg = { 33 , 467 , 226 , 18 };
 
+    semaphore.frames.push_back({ 9, 264, 72, 143 });
+    semaphore.frames.push_back({ 9, 264, 72, 143 });
+    semaphore.frames.push_back({ 81, 264, 72, 143 });
+    semaphore.frames.push_back({ 154, 264,69, 143 });
+    semaphore.frames.push_back({ 222, 264, 72, 143 });
+    semaphore.frames.push_back({ 0, 0, 0, 0 });
+    semaphore.loop = false;
+    semaphore.speed = 0.016f;
+
     greenStraight.frames.push_back({ 180,878, 67,147 });
     greenStraight.frames.push_back({ 256,878, 67,147 });
-    greenStraight.speed = 0.02f;
+    greenStraight.speed = 0.08f;
     greenStraight.loop = true;
 
     greenLeftOne.frames.push_back({ 336,888, 73,137 });
@@ -68,7 +77,7 @@ ModuleSceneBase::ModuleSceneBase(bool active) : Module(active) {
 
     yellowStraight.frames.push_back({ 180,1038, 67,147 });
     yellowStraight.frames.push_back({ 256,1038, 67,147 });
-    yellowStraight.speed = 0.02f;
+    yellowStraight.speed = 0.06f;
     yellowStraight.loop = true;
 
     yellowLeftOne.frames.push_back({ 336,1042, 73,147 });
@@ -156,17 +165,20 @@ bool ModuleSceneBase::Start() {
     SetUpGUI();
     SetUpColors();
     stageNumber = 1;
-    timer = 15.0f;
+    beamNumber = 3;
+    timer = 5.0f;
     countdown = 50.0f;
     state = nextState = Intro;
+    timerSemaphore = 0.0f;
 
     Enemy* e = new Enemy;
     e->x = 0.0f;
     e->z = 6;
     e->isYellow = true;
-    e->speed = 50.0f;
+    e->speed = 50.0f;  // = 200 player speed
     e->currentAnimation = &yellowStraight;
     enemies.push_back(e);
+
     e = new Enemy;
     e->x = -0.35f;
     e->z = 5;
@@ -174,6 +186,7 @@ bool ModuleSceneBase::Start() {
     e->speed = 50.0f;
     e->currentAnimation = &greenStraight;
     enemies.push_back(e);
+
     e = new Enemy;
     e->x = 0.35f;
     e->z = 5;
@@ -181,6 +194,7 @@ bool ModuleSceneBase::Start() {
     e->speed = 50.0f;
     e->currentAnimation = &greenStraight;
     enemies.push_back(e);
+
     e = new Enemy;
     e->x = 0.65f;
     e->z = 4;
@@ -188,6 +202,7 @@ bool ModuleSceneBase::Start() {
     e->speed = 50.0f;
     e->currentAnimation = &yellowStraight;
     enemies.push_back(e);
+
     e = new Enemy;
     e->x = -0.65f;
     e->z = 4;
@@ -195,10 +210,20 @@ bool ModuleSceneBase::Start() {
     e->speed = 50.0f;
     e->currentAnimation = &yellowStraight;
     enemies.push_back(e);
+
+    semaphoreFX = App->audio->LoadFx("music/fxSemaphoreOne.wav");
+    semaphoreFinalFX = App->audio->LoadFx("music/fxSemaphoreFinal.wav");
+    loadTrackFX = App->audio->LoadFx("music/fxLoadTrack.wav");
+
+
     for (int i = 0; i < 1000; i++) {
         Segment* s = new Segment();
         s->wZ = i * segmentLength;
         s->wY = (i > 0) ? (segments[i - 1])->wY : 0;
+        if (i == 8) {
+            s->spriteID = startSignID;
+            s->spriteX = 0;
+        }
         if (i < 200) {
         } else if (i < 500) {
             s->curve = -5.0f;
@@ -224,7 +249,20 @@ update_status ModuleSceneBase::Update(float deltaTime) {
     switch (state) {
         case Intro:
             timer -= deltaTime;
+            timerSemaphore += deltaTime;
             App->player->speed = 0.0f;
+            if (beamNumber == 3) {
+                App->audio->PlayFx(loadTrackFX);
+                beamNumber--;
+            }
+            if (timerSemaphore > 2.5f && beamNumber > 0) {
+                App->audio->PlayFx(semaphoreFX);
+                timerSemaphore -= 1.0f;
+                beamNumber--;
+            }if (timerSemaphore > 2.5f && beamNumber == 0) {
+                App->audio->PlayFx(semaphoreFinalFX);
+                beamNumber = -5;
+            }
             if (timer < 0.0f) {
                 nextState = Race;
                 switch (App->musicSelected) {
@@ -267,7 +305,9 @@ update_status ModuleSceneBase::Update(float deltaTime) {
 
     }
     state = nextState;
+
     DrawRoad(deltaTime);
+
     DrawGUI();
     return UPDATE_CONTINUE;
 }
@@ -303,6 +343,9 @@ void ModuleSceneBase::DrawRoad(float deltaTime) {
     //Draw Objects
     for (int i = initPos + 100; i >= initPos; i--) {
         DrawObjects(segments[i%roadLength]);
+    }
+    if (state == Intro) {
+        App->renderer->Blit(textureObjects, 56, 190, &semaphore.GetCurrentFrame(), 0, 1.225f, 0.95f);
     }
     //Draw Enemies
     for (int i = enemies.size() - 1; i >= 0; i--){

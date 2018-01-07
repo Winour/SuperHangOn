@@ -65,9 +65,10 @@ public:
     States state, nextState;
 
 private:
-    float timer;
+    float timer, timerSemaphore;
     float countdown;
     int stageNumber;
+    int beamNumber;
 
 private: //Enemy
     std::vector<Enemy*> enemies;
@@ -110,6 +111,10 @@ private: // Road
     SDL_Color roadColor, blueSky, white, greyDark, brownDark, brownLight;
     std::vector<SDL_Rect> objects;
     unsigned int bushID, signLeftID, signRightID, barrelID, bidalStoneID, rockID, startSignID, checkSignID, goalSignID, peopleID;
+    Animation semaphore;
+
+private: //Sounds
+    unsigned int semaphoreFX, semaphoreFinalFX, loadTrackFX;
 
 private: //Camera
     const float camDepth = CAMERA_DEPTH;

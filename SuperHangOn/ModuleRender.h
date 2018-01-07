@@ -20,7 +20,7 @@ public:
 	update_status PostUpdate(float deltaTime);
 	bool CleanUp();
 
-	bool Blit(SDL_Texture* texture, int x, int y, SDL_Rect* section, float speed = 1.0f, float scale = 1.0f);
+	bool Blit(SDL_Texture* texture, int x, int y, SDL_Rect* section, float speed = 1.0f, float scaleW = 1.0f, float scaleH = -99.0f);
 	bool DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uint8 a, bool use_camera = true);
     bool DrawSegment(SDL_Color _color, Sint16 x1, Sint16 y1, Sint16 w1, Sint16 x2, Sint16 y2, Sint16 w2);
     bool DrawSegment(int r, int g, int b, int a, Sint16 x1, Sint16 y1, Sint16 w1, Sint16 x2, Sint16 y2, Sint16 w2);
