@@ -506,7 +506,7 @@ void ModuleSceneBase::DrawEnemy(const Enemy* e) {
     int initPos = (int)(camZ / segmentLength);
     if (e->z > initPos + 1 && scale > 1 && App->player->stateRace == RUNNING) {
         SDL_Rect collision = { destX - (sprite.w * scale) / 2, destY + sprite.h * scale,sprite.w * scale, -destH };
-        App->player->Collision(collision);
+        App->player->CollisionWithEnemy(collision);
     }
 
 }

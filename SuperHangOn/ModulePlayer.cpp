@@ -418,3 +418,12 @@ void ModulePlayer::Collision(SDL_Rect object) {
         backToRoadTimer = 2.0f;
     }
 }
+void ModulePlayer::CollisionWithEnemy(SDL_Rect object) {
+    if (!(collider.x > object.x + object.w || collider.x + collider.w < object.x)) {
+        speed /= speed;
+        state = RIGHT_THREE;
+        animChange = true;
+        App->audio->PlayFx(colisionFX, 1);
+
+    }
+}

@@ -37,6 +37,7 @@ public:
     bool CleanUp();
     void CentripetalForce(float value);
     void Collision(SDL_Rect object);
+    void CollisionWithEnemy(SDL_Rect object);
 
 public:
     float speed;
