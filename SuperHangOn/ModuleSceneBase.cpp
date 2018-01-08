@@ -214,9 +214,6 @@ bool ModuleSceneBase::Start() {
     semaphoreFX = App->audio->LoadFx("music/fxSemaphoreOne.wav");
     semaphoreFinalFX = App->audio->LoadFx("music/fxSemaphoreFinal.wav");
     loadTrackFX = App->audio->LoadFx("music/fxLoadTrack.wav");
-    engineFX = App->audio->LoadFx("music/fxEngine.wav");
-    outOfRoadFX = App->audio->LoadFx("music/fxOutRoad.wav");
-    colisionFX = App->audio->LoadFx("music/fxColision.wav");
     lapFX = App->audio->LoadFx("music/fxLap.wav");
 
     for (int i = 0; i < 1000; i++) {
@@ -240,7 +237,7 @@ bool ModuleSceneBase::Start() {
         }
         if (i % 50 == 0) {
             s->spriteID = 0;
-            s->spriteX = 2;
+            s->spriteX = -2;
         }
                                                      // 15-60  /  70-130  GOOD VALUES
         segments.push_back(s);  
@@ -299,12 +296,6 @@ update_status ModuleSceneBase::Update(float deltaTime) {
         case Race:
             countdown -= deltaTime;
             RecalculatePosition(App->player->speed * deltaTime * 55);   
-            if (App->player->outOfRoad) {
-                App->audio->PlayFx(outOfRoadFX, (App->player->speed / MAX_SPEED) / 3);
-            } else {
-                App->audio->PlayFx(engineFX, (App->player->speed / MAX_SPEED) / 7);
-            }
-
             for (int i = enemies.size() - 1; i >= 0; i--) {
                 UpdateEnemy(enemies[i], deltaTime);
             }
@@ -444,7 +435,7 @@ void ModuleSceneBase::DrawEnemy(const Enemy* e) {
         App->renderer->Blit(guiTexture, destX - (sprite.w * scale) / 2, (int)destY, &sprite, 0.0f, scale);
     }
     int initPos = (int)(camZ / segmentLength);
-    if (e->z > initPos + 1 && scale > 1) {
+    if (e->z > initPos + 1 && scale > 1 && App->player->stateRace == RUNNING) {
         SDL_Rect collision = { destX - (sprite.w * scale) / 2, destY + sprite.h * scale,sprite.w * scale, -destH };
         App->renderer->DrawQuad(collision, 255, 0, 0, 100, false);
         App->player->Collision(collision);

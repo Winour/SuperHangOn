@@ -12,7 +12,8 @@ enum State {
     IDLE,
     RUNNING,
     FALLING,
-    ON_THE_FLOOR
+    ON_THE_FLOOR,
+    RESPAWNING
 };
 
 enum RunningStates {
@@ -74,9 +75,13 @@ private:
     iPoint position, dustPos;
 
     int state;
-    float timer, fallSpeed;
+    float timer, fallSpeed, backToRoadTimer, offsetToRoad;
     bool animChange = false;
     bool fall = false;
+
+    unsigned int engineFX;
+    unsigned int outOfRoadFX;
+    unsigned int colisionFX;
 };
 
 #endif // !__MODULEPLAYER_H__

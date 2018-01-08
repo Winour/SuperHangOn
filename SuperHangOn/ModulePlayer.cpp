@@ -143,6 +143,9 @@ bool ModulePlayer::Start() {
     state = score = stateRace = 0;
     texture = App->textures->Load("sprites/map&players.png");
     textureFalls = App->textures->Load("sprites/falls.png");
+    engineFX = App->audio->LoadFx("music/fxEngine.wav");
+    outOfRoadFX = App->audio->LoadFx("music/fxOutRoad.wav");
+    colisionFX = App->audio->LoadFx("music/fxColision.wav");
     currentAnimation = &straight;
     position.x = SCREEN_WIDTH / 2 - currentAnimation->GetCurrentFrame().w / 2;
     position.y = SCREEN_HEIGHT * 5 / 6 - currentAnimation->GetCurrentFrame().h / 2;
@@ -179,12 +182,34 @@ update_status ModulePlayer::Update(float deltaTime) {
         }
     }
 
-    if (App->input->GetKey(SDL_SCANCODE_0) == KEY_DOWN) {
-        currentAnimation = &fastFall;
-        fall = true;
-
+    if (backToRoadTimer > 0.0f && stateRace == ON_THE_FLOOR) {
+        backToRoadTimer -= deltaTime;
+        if (backToRoadTimer <= 0.0f) {
+            stateRace = RESPAWNING;
+            backToRoadTimer = 2.0f;
+            state = STRAIGHT;
+            currentAnimation = &straight;
+            RecalculatePos();
+            offsetToRoad = (0 - xPos)/2;
+        }
     }
+    if (backToRoadTimer > 0.0f && stateRace == RESPAWNING) {
+        backToRoadTimer -= deltaTime;
+        xPos += offsetToRoad * deltaTime;
+        RecalculatePos();
+        if (backToRoadTimer <= 0.0f) {
+            stateRace = RUNNING;
+            backToRoadTimer = -2.0f;
+            fall = false;
+        }
+    }
+
     if (stateRace == RUNNING) {
+        if (outOfRoad) {
+            App->audio->PlayFx(outOfRoadFX, (speed / MAX_SPEED) / 3);
+        } else {
+            App->audio->PlayFx(engineFX, (speed / MAX_SPEED) / 7);
+        }
         if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) {
             if (xPos - dustPos.x + position.x * 3 > ROAD_WIDTH * 1.35f) {
                 outOfRoad = true;
@@ -325,18 +350,25 @@ update_status ModulePlayer::Update(float deltaTime) {
         speed = 0;
         stateRace = ON_THE_FLOOR;
     }
-    if (!fall) {
-        if (!outOfRoad) {
+    if (stateRace == RESPAWNING) {
+        if ((int)(backToRoadTimer * 5) % 2 == 0){
             App->renderer->Blit(texture, position.x, position.y, &currentAnimation->GetCurrentFrame(), 0);
-        } else {
-            App->renderer->Blit(texture, position.x + rand() % 4 - 2, position.y + rand() % 4 - 2, &currentAnimation->GetCurrentFrame(), 0);
-            App->renderer->Blit(texture, dustPos.x, dustPos.y, &dust.GetCurrentFrame(), 0);
         }
     } else {
-        position.y -= fallSpeed;
-        App->renderer->Blit(textureFalls, position.x - 40, position.y - 80, &currentAnimation->GetCurrentFrame(), 0,2.5f);
-        fallSpeed = fallSpeed * 2 / 3;
+        if (!fall) {
+            if (!outOfRoad) {
+                App->renderer->Blit(texture, position.x, position.y, &currentAnimation->GetCurrentFrame(), 0);
+            } else {
+                App->renderer->Blit(texture, position.x + rand() % 4 - 2, position.y + rand() % 4 - 2, &currentAnimation->GetCurrentFrame(), 0);
+                App->renderer->Blit(texture, dustPos.x, dustPos.y, &dust.GetCurrentFrame(), 0);
+            }
+        } else {
+            position.y -= fallSpeed;
+            App->renderer->Blit(textureFalls, position.x - 40, position.y - 80, &currentAnimation->GetCurrentFrame(), 0, 2.5f);
+            fallSpeed = fallSpeed * 2 / 3;
+        }
     }
+
     if (!outOfRoad) {
         score += (int)(speed * speed * deltaTime / 40) * 10;
     }
@@ -366,11 +398,10 @@ void ModulePlayer::RecalculateAnimSpeed() {
 
 void ModulePlayer::Collision(SDL_Rect object) {
     App->renderer->DrawQuad(collider, 0, 0, 255, 100, false);
-    //if (!(collider.x > object.x + object.w || collider.x + collider.w < object.x || collider.y > object.y + object.h || collider.y + collider.h < object.y)) {
-    //    fall = true;
-    //}
     if (!(collider.x > object.x + object.w || collider.x + collider.w < object.x) ) {
         fall = true;
         stateRace = FALLING;
+        App->audio->PlayFx(colisionFX);
+        backToRoadTimer = 2.0f;
     }
 }
