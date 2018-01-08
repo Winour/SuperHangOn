@@ -141,7 +141,7 @@ ModulePlayer::~ModulePlayer() {
 bool ModulePlayer::Start() {
     timer = speed = xPos = 0.0f;
     state = score = stateRace = 0;
-    animChange = fall = false;
+    animChange = fall = exceptionAnim = false;
     texture = App->textures->Load("sprites/map&players.png");
     textureFalls = App->textures->Load("sprites/falls.png");
     engineFX = App->audio->LoadFx("music/fxEngine.wav");
@@ -319,19 +319,20 @@ update_status ModulePlayer::Update(float deltaTime) {
             }
 
     }
-
-    if (backToRoadTimer > 0.0f && stateRace == ON_THE_FLOOR) {
-        backToRoadTimer -= deltaTime;
-        if (backToRoadTimer <= 0.0f) {
-            stateRace = RESPAWNING;
-            backToRoadTimer = 2.0f;
-            state = STRAIGHT;
-            currentAnimation = &straight;
-            RecalculatePos();
-            offsetToRoad = (0 - xPos) / 2;
+    if (stateRace != GAME_OVER) {
+        if (backToRoadTimer > 0.0f && stateRace == ON_THE_FLOOR) {
+            backToRoadTimer -= deltaTime;
+            if (backToRoadTimer <= 0.0f) {
+                stateRace = RESPAWNING;
+                backToRoadTimer = 2.0f;
+                state = STRAIGHT;
+                currentAnimation = &straight;
+                fall = false;
+                RecalculatePos();
+                offsetToRoad = (0 - xPos) / 2;
+            }
         }
     }
-
     if (backToRoadTimer > 0.0f && stateRace == RESPAWNING) {
         backToRoadTimer -= deltaTime;
         xPos += offsetToRoad * deltaTime;
@@ -355,6 +356,13 @@ update_status ModulePlayer::Update(float deltaTime) {
         }
         speed = 0;
         stateRace = ON_THE_FLOOR;
+    }
+    if (stateRace == GAME_OVER) {
+        if (fall) {
+            App->renderer->Blit(textureFalls, position.x - 40, position.y - 80, &currentAnimation->GetCurrentFrame(), 0, 2.5f);
+        } else {
+            App->renderer->Blit(texture, position.x, position.y, &currentAnimation->GetCurrentFrame(), 0);
+        }
     }
     if (stateRace == RESPAWNING) {
         if ((int)(backToRoadTimer * 5) % 2 == 0){

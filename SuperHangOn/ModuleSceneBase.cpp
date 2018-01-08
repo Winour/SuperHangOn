@@ -167,10 +167,11 @@ bool ModuleSceneBase::Start() {
     textureObjects = App->textures->Load("sprites/decoration.png");
     SetUpGUI();
     SetUpColors();
+    semaphore.Reset();
     stageNumber = 1;
     beamNumber = 3;
     timer = 5.0f;
-    countdown = 5.0f;
+    countdown = 10.0f;
     state = nextState = Intro;
     timerSemaphore = 0.0f;
     camY = 1500.0f;
@@ -188,7 +189,7 @@ bool ModuleSceneBase::Start() {
         e->x = 0.0f;
         e->z = 6;
         e->isYellow = true;
-        e->speed = 50.0f;  // = 200 player speed
+        e->speed = 55.0f;  // = 200 player speed
         e->currentAnimation = &yellowStraight;
         enemies.push_back(e);
 
@@ -196,7 +197,7 @@ bool ModuleSceneBase::Start() {
         e->x = -0.35f;
         e->z = 5;
         e->isYellow = false;
-        e->speed = 50.0f;
+        e->speed = 45.0f;
         e->currentAnimation = &greenStraight;
         enemies.push_back(e);
 
@@ -204,7 +205,7 @@ bool ModuleSceneBase::Start() {
         e->x = 0.35f;
         e->z = 5;
         e->isYellow = false;
-        e->speed = 50.0f;
+        e->speed = 45.0f;
         e->currentAnimation = &greenStraight;
         enemies.push_back(e);
 
@@ -367,6 +368,7 @@ update_status ModuleSceneBase::Update(float deltaTime) {
         case GameOver:
             timer -= deltaTime;
             App->player->stateRace = GAME_OVER;
+
             if (timer <= 0.0f) {
                 timer = 99.0f;
                 App->audio->StopMusic(0.1f);
@@ -675,6 +677,9 @@ void ModuleSceneBase::Hill(const Segment* a, Segment* b, float value, float leng
 
 
 bool ModuleSceneBase::CleanUp() {
+    App->textures->Unload(textureBackground);
+    App->textures->Unload(guiTexture);
+    App->textures->Unload(textureObjects);
     return true;
 }
 
