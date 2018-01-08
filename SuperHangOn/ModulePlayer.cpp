@@ -141,7 +141,7 @@ ModulePlayer::~ModulePlayer() {
 bool ModulePlayer::Start() {
     timer = speed = xPos = 0.0f;
     state = score = stateRace = 0;
-    animChange = fall = exceptionAnim = false;
+    animChange = fall = exceptionAnim = outOfRoad = false;
     texture = App->textures->Load("sprites/map&players.png");
     textureFalls = App->textures->Load("sprites/falls.png");
     engineFX = App->audio->LoadFx("music/fxEngine.wav");

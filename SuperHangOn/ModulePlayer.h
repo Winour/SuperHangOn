@@ -43,7 +43,7 @@ public:
     float speed;
     float xPos;
     unsigned int score;
-    bool outOfRoad = false;
+    bool outOfRoad;
     bool exceptionAnim;
     int stateRace;
     SDL_Rect collider;

@@ -230,7 +230,7 @@ bool ModuleSceneBase::Start() {
         e->x = 0.0f;
         e->z = 6;
         e->isYellow = true;
-        e->speed = 50.0f;  // = 200 player speed
+        e->speed = 55.0f;  // = 200 player speed
         e->currentAnimation = &yellowStraight;
         enemies.push_back(e);
 
@@ -238,7 +238,7 @@ bool ModuleSceneBase::Start() {
         e->x = -0.35f;
         e->z = 5;
         e->isYellow = false;
-        e->speed = 50.0f;
+        e->speed = 45.0f;
         e->currentAnimation = &greenStraight;
         enemies.push_back(e);
 
@@ -246,7 +246,7 @@ bool ModuleSceneBase::Start() {
         e->x = 0.35f;
         e->z = 5;
         e->isYellow = false;
-        e->speed = 50.0f;
+        e->speed = 48.0f;
         e->currentAnimation = &greenStraight;
         enemies.push_back(e);
 
@@ -262,7 +262,7 @@ bool ModuleSceneBase::Start() {
         e->x = -0.65f;
         e->z = 4;
         e->isYellow = true;
-        e->speed = 50.0f;
+        e->speed = 52.0f;
         e->currentAnimation = &yellowStraight;
         enemies.push_back(e);
     }
@@ -330,11 +330,13 @@ update_status ModuleSceneBase::Update(float deltaTime) {
             if (countdown < 0) {
                 timer = 3.0f;
                 nextState = GameOver;
+                App->audio->PlayFx(colisionFX);
             }
             if (camZ > 12000 * segmentLength) {
                 timer = 5.0f;
                 App->audio->PlayMusic("music/6Finished.ogg", 0.0f);
                 nextState = GameOver;
+                App->audio->PlayFx(colisionFX);
             }
             break;
 
