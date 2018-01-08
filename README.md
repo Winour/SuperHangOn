@@ -27,6 +27,7 @@ On the game you manage a motorbike on the track where you have to face other mot
 * **TURN LEFT:** (Left key)
 * **TURN RIGHT:** (Right key)
 * **TURBO:** (X Key)
+* **ACCEPT** (Return Key)
 * **EXIT GAME** (Escape Key)
 
 ## How to finish the game:
