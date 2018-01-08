@@ -40,9 +40,9 @@ private:
     iPoint copyRightPos;
     iPoint pointerPos;
 
-    bool firstSelection = true;
-    bool firstMenu = true;
-    bool switching = false;
+    bool firstSelection;
+    bool firstMenu;
+    bool switching;
 };
 
 #endif // !__MODULESCENENEWGAME_H__

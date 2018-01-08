@@ -45,6 +45,14 @@ bool ModuleSceneMusicSelection::Start() {
     countdownPos.x = SCREEN_WIDTH / 2 + 15;
     countdownPos.y = (int)(SCREEN_HEIGHT * 0.7f);
 
+    selection = 0;
+    timerFast = 0.0f;
+    timerSlow = 0.0f;
+    countdown = 10.0f;
+    timeOut = false;
+    musicChanged = false;
+    switching = false;
+
     return true;
 }
 

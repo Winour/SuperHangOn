@@ -16,7 +16,7 @@ ModuleSceneIntro::ModuleSceneIntro(bool active) : Module(active) {
         }
     }
     anim.speed = 0.25f;
-    anim.loop = false;
+    anim.loop = true;
 }
 
 
@@ -29,15 +29,15 @@ bool ModuleSceneIntro::Start() {
     segaIntro = App->textures->Load("sprites/segaLogo.bmp");
     position.x = (SCREEN_WIDTH/2) - (anim.GetCurrentFrame().w/2);
     position.y = (SCREEN_HEIGHT/2) - (anim.GetCurrentFrame().h/2);
-    App->renderer->camera.x = App->renderer->camera.y = 0;
-
+    App->renderer->camera.x = App->renderer->camera.y = 0;  
+    anim.Reset();
     return true;
 }
 
 update_status ModuleSceneIntro::Update(float deltaTime) {
 
     if ((anim.Finished() || App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN) && App->fade->isFading() == false) {
-         App->fade->FadeToBlack((Module*)App->sceneNewGame, this, 0.5f);
+        App->fade->FadeToBlack((Module*)App->sceneNewGame, this, 0.5f);
     }
 
     App->renderer->Blit(segaIntro, position.x, position.y, &(anim.GetCurrentFrame()), 0.0f);

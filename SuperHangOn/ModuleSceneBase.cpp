@@ -30,6 +30,8 @@ ModuleSceneBase::ModuleSceneBase(bool active) : Module(active) {
     speed = { 275 , 441 , 82 , 18 };
     km = { 367 , 441 , 34 , 18 };
     sg = { 33 , 467 , 226 , 18 };
+    gameOver = { 1153 , 248 , 184 , 34 };
+    extendedPlay = { 1153 , 294 , 158 , 19 };
 
     semaphore.frames.push_back({ 9, 264, 72, 143 });
     semaphore.frames.push_back({ 9, 264, 72, 143 });
@@ -167,7 +169,7 @@ bool ModuleSceneBase::Start() {
     stageNumber = 1;
     beamNumber = 3;
     timer = 5.0f;
-    countdown = 50.0f;
+    countdown = 5.0f;
     state = nextState = Intro;
     timerSemaphore = 0.0f;
 
@@ -249,6 +251,7 @@ update_status ModuleSceneBase::Update(float deltaTime) {
     App->renderer->DrawQuad(sky, blueSky.r, blueSky.g, blueSky.b, blueSky.a, false);
     switch (state) {
         case Intro:
+
             App->player->stateRace == IDLE;
             for (int i = 0; i < enemies.size(); i++) {
                 enemies[i]->currentAnimation->speed = 0.0f;
@@ -299,6 +302,10 @@ update_status ModuleSceneBase::Update(float deltaTime) {
             for (int i = enemies.size() - 1; i >= 0; i--) {
                 UpdateEnemy(enemies[i], deltaTime);
             }
+            if (countdown < 0) {
+                timer = 3.0f;
+                nextState = GameOver;
+            }
             break;
 
         case Finish:
@@ -306,7 +313,15 @@ update_status ModuleSceneBase::Update(float deltaTime) {
             break;
 
         case GameOver:
-
+            timer -= deltaTime;
+            App->player->stateRace = GAME_OVER;
+            if (timer <= 0.0f) {
+                timer = 99.0f;
+                App->audio->StopMusic(0.1f);
+                App->audio->StopFx();
+                App->fade->FadeToBlack((Module*)App->sceneIntro, this, 0.1f);
+                App->player->Disable();
+            }
             break;
 
         default:
@@ -357,10 +372,11 @@ void ModuleSceneBase::DrawRoad(float deltaTime) {
         App->renderer->Blit(textureObjects, 56, 190, &semaphore.GetCurrentFrame(), 0, 1.225f, 0.95f);
     }
     //Draw Enemies
-    for (int i = enemies.size() - 1; i >= 0; i--){
-        DrawEnemy(enemies[i]);
+    if (state == Intro || state == Race) {
+        for (int i = enemies.size() - 1; i >= 0; i--) {
+            DrawEnemy(enemies[i]);
+        }
     }
-
 
 }
 
@@ -677,6 +693,11 @@ void ModuleSceneBase::DrawGUI() {
     App->renderer->Blit(guiTexture, speedPos.x, speedPos.y, &speed, 0);
     App->renderer->Blit(guiTexture, kmPos.x, kmPos.y, &km, 0);
     App->renderer->Blit(guiTexture, sgPos.x, sgPos.y, &sg, 0);
+    if (state == GameOver) {
+        if ((int)(timer * 10) / 3 % 2 == 0) {
+            App->renderer->Blit(guiTexture, SCREEN_WIDTH / 2 - gameOver.w / 2, SCREEN_HEIGHT / 2, &gameOver, 0);
+        }
+    }
 }
 
 void ModuleSceneBase::SetUpColors() {

@@ -134,6 +134,8 @@ private: //GUI
     SDL_Rect speed;
     SDL_Rect km;
     SDL_Rect sg;
+    SDL_Rect gameOver;
+    SDL_Rect extendedPlay;
 
     iPoint scorePos;
     iPoint timePos;

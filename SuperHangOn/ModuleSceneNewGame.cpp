@@ -63,6 +63,13 @@ bool ModuleSceneNewGame::Start() {
     textureHangOnTitle = App->textures->Load("sprites/superHangOnLogo.bmp");
     textureSegaLogo = App->textures->Load("sprites/segaLogoMenuOne.bmp");
 
+    logoAnim.Reset();
+    logoAnimLoop.Reset();
+
+    firstSelection = true;
+    firstMenu = true;
+    switching = false;
+
     optionsOnePos.x = (SCREEN_WIDTH / 2) - (optionsOne.w / 2);
     optionsOnePos.y = (SCREEN_HEIGHT / 2) + (optionsOne.h);
     optionsTwoPos.x = (SCREEN_WIDTH / 2) - (optionsTwo.w / 2);

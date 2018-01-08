@@ -74,6 +74,13 @@ bool ModuleSceneMapSelection::Start() {
 
     countdownPos.x = SCREEN_WIDTH / 2 + 15;
     countdownPos.y = (int)(SCREEN_HEIGHT * 0.7f);
+
+    selection = 0;
+    countdown = 15.0f;
+    timerFast = 0.0f;
+    timerSlow = 0.0f;
+    switching = false;
+    timeOut = false;
     return true;
 }
 

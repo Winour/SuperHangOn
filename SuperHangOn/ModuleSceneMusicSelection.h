@@ -34,13 +34,13 @@ private:
 
     iPoint musicListPos, textPushStartPos, textSelectMusicPos, countdownPos;
 
-    Uint8 selection = 0;
-    float timerFast = 0.0f;
-    float timerSlow = 0.0f;
-    float countdown = 10.0f;
-    bool timeOut = false;
-    bool musicChanged = false;
-    bool switching = false;
+    Uint8 selection;
+    float timerFast;
+    float timerSlow;
+    float countdown;
+    bool timeOut;
+    bool musicChanged;
+    bool switching;
 };
 
 #endif // !__MODULESCENEMUSICSELECTION_H__

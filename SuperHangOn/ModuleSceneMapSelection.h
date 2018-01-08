@@ -43,12 +43,12 @@ private:
 
     iPoint africaPos, europePos, americaPos, asiaPos;
     iPoint textEuropePos, textAfricaPos, textAsiaPos, textAmericaPos, textPushStartPos, textSelectClassPos, countdownPos;
-    Uint8 selection = 0;
-    float countdown = 15.0f;
-    float timerFast = 0.0f;
-    float timerSlow = 0.0f;
-    bool switching = false;
-    bool timeOut = false;
+    Uint8 selection;
+    float countdown;
+    float timerFast;
+    float timerSlow;
+    bool switching;
+    bool timeOut;
 };
 
 #endif // !__MODULESCENEMAPSELECTION__H__

@@ -13,7 +13,8 @@ enum State {
     RUNNING,
     FALLING,
     ON_THE_FLOOR,
-    RESPAWNING
+    RESPAWNING,
+    GAME_OVER
 };
 
 enum RunningStates {

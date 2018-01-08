@@ -180,28 +180,8 @@ update_status ModulePlayer::Update(float deltaTime) {
                 speed = IDLE_SPEED;
             }
         }
-    }
-
-    if (backToRoadTimer > 0.0f && stateRace == ON_THE_FLOOR) {
-        backToRoadTimer -= deltaTime;
-        if (backToRoadTimer <= 0.0f) {
-            stateRace = RESPAWNING;
-            backToRoadTimer = 2.0f;
-            state = STRAIGHT;
-            currentAnimation = &straight;
-            RecalculatePos();
-            offsetToRoad = (0 - xPos)/2;
-        }
-    }
-    if (backToRoadTimer > 0.0f && stateRace == RESPAWNING) {
-        backToRoadTimer -= deltaTime;
-        xPos += offsetToRoad * deltaTime;
-        RecalculatePos();
-        if (backToRoadTimer <= 0.0f) {
-            stateRace = RUNNING;
-            backToRoadTimer = -2.0f;
-            fall = false;
-        }
+    } else {
+        speed = 0.0f;
     }
 
     if (stateRace == RUNNING) {
@@ -279,13 +259,13 @@ update_status ModulePlayer::Update(float deltaTime) {
                 outOfRoad = false;
             }
         }
-    }
-    xPos += deltaTime * speed * 8.0f * state;
-    
-    if (xPos > MAX_X) {
-        xPos = MAX_X;
-    } else if (xPos< -MAX_X) {
-        xPos = -MAX_X;
+        xPos += deltaTime * speed * 8.0f * state;
+
+        if (xPos > MAX_X) {
+            xPos = MAX_X;
+        } else if (xPos< -MAX_X) {
+            xPos = -MAX_X;
+        }
     }
 
     if (animChange && stateRace == RUNNING) {
@@ -338,7 +318,32 @@ update_status ModulePlayer::Update(float deltaTime) {
             }
 
     }
+
+    if (backToRoadTimer > 0.0f && stateRace == ON_THE_FLOOR) {
+        backToRoadTimer -= deltaTime;
+        if (backToRoadTimer <= 0.0f) {
+            stateRace = RESPAWNING;
+            backToRoadTimer = 2.0f;
+            state = STRAIGHT;
+            currentAnimation = &straight;
+            RecalculatePos();
+            offsetToRoad = (0 - xPos) / 2;
+        }
+    }
+
+    if (backToRoadTimer > 0.0f && stateRace == RESPAWNING) {
+        backToRoadTimer -= deltaTime;
+        xPos += offsetToRoad * deltaTime;
+        RecalculatePos();
+        if (backToRoadTimer <= 0.0f) {
+            stateRace = RUNNING;
+            backToRoadTimer = -2.0f;
+            fall = false;
+        }
+    }
+
     collider = { SCREEN_WIDTH / 2 - currentAnimation->GetCurrentFrame().w / 2, SCREEN_HEIGHT - 10, currentAnimation->GetCurrentFrame().w, -currentAnimation->GetCurrentFrame().h };
+    
     if (stateRace == FALLING) {
         if (speed > 150) {
             currentAnimation = &fastFall;
