@@ -81,7 +81,10 @@ bool ModuleSceneAfrica::Start() {
                 s->spriteID = rockID;
                 s->spriteX = 3;
             }
-
+            if (i == 12045) {
+                s->spriteID = peopleID;
+                s->spriteX = 0;
+            }
 
         }
         // 15-60  /  70-130  GOOD VALUES

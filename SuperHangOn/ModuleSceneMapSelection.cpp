@@ -144,5 +144,6 @@ update_status ModuleSceneMapSelection::Update(float deltaTime) {
 }
 
 bool ModuleSceneMapSelection::CleanUp() {
+    App->textures->Unload(map);
     return true;
 }

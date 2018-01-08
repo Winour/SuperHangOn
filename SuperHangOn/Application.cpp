@@ -41,8 +41,6 @@ Application::Application()
     modules.push_back(player = new ModulePlayer(false));
 
 	// Modules to draw on top of game logic
-	//modules.push_back(collision = new ModuleCollision());
-	//modules.push_back(particles = new ModuleParticles());
 	modules.push_back(fade = new ModuleFadeToBlack());
 }
 
@@ -66,7 +64,7 @@ bool Application::Init()
 	}
 
 	// Start the first scene --
-	fade->FadeToBlack(sceneAfrica, nullptr, 0.5f);
+	fade->FadeToBlack(sceneNewGame, nullptr, 0.5f);
 
 	return ret;
 }

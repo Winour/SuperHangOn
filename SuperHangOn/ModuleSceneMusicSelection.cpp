@@ -131,5 +131,6 @@ update_status ModuleSceneMusicSelection::Update(float deltaTime) {
 }
 
 bool ModuleSceneMusicSelection::CleanUp() {
+    App->textures->Unload(texture);
     return true;
 }

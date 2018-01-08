@@ -187,9 +187,9 @@ update_status ModulePlayer::Update(float deltaTime) {
 
     if (stateRace == RUNNING) {
         if (outOfRoad) {
-            App->audio->PlayFx(outOfRoadFX, (speed / MAX_SPEED) / 3);
+            //App->audio->PlayFx(outOfRoadFX, (speed / MAX_SPEED) / 3);
         } else {
-            App->audio->PlayFx(engineFX, (speed / MAX_SPEED) / 7);
+            //App->audio->PlayFx(engineFX, (speed / MAX_SPEED) / 7);
         }
         if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) {
             if (xPos - dustPos.x + position.x * 3 > ROAD_WIDTH * 1.35f) {
@@ -394,6 +394,9 @@ update_status ModulePlayer::Update(float deltaTime) {
 }
 
 bool ModulePlayer::CleanUp() {
+    App->textures->Unload(texture);
+    App->textures->Unload(textureFalls);
+    currentAnimation = nullptr;
     return true;
 }
 
@@ -417,6 +420,7 @@ void ModulePlayer::Collision(SDL_Rect object) {
         fall = true;
         stateRace = FALLING;
         backToRoadTimer = 2.0f;
+        App->audio->PlayFx(colisionFX);
     }
 }
 void ModulePlayer::CollisionWithEnemy(SDL_Rect object) {

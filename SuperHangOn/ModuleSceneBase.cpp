@@ -277,9 +277,8 @@ update_status ModuleSceneBase::Update(float deltaTime) {
     App->renderer->DrawQuad(sky, blueSky.r, blueSky.g, blueSky.b, blueSky.a, false);
     switch (state) {
         case Intro:
-
-            App->player->stateRace == IDLE;
-            for (int i = 0; i < enemies.size(); i++) {
+            App->player->stateRace = IDLE;
+            for (size_t i = 0; i < enemies.size(); i++) {
                 enemies[i]->currentAnimation->speed = 0.0f;
             }
             timer -= deltaTime;
@@ -300,12 +299,12 @@ update_status ModuleSceneBase::Update(float deltaTime) {
             if (timer < 0.0f) {
                 nextState = Race;          
                 App->player->stateRace = RUNNING;
-                for (int i = 0; i < enemies.size(); i++) {
+                for (size_t i = 0; i < enemies.size(); i++) {
                     enemies[i]->currentAnimation->speed = 0.25f;
                 }
                 switch (App->musicSelected) {
                     case 0:
-                        App->audio->PlayMusic("music/2OutrideaCrisis.ogg", 0.f);
+                        App->audio->PlayMusic("music/2OutrideaCrisis.ogg", 0.f);                    
                         break;
                     case 1:
                         App->audio->PlayMusic("music/3Sprinter.ogg", 0.f);
@@ -332,20 +331,23 @@ update_status ModuleSceneBase::Update(float deltaTime) {
                 timer = 3.0f;
                 nextState = GameOver;
             }
+            if (camZ > 12000 * segmentLength) {
+                timer = 5.0f;
+                App->audio->PlayMusic("music/6Finished.ogg", 0.0f);
+                nextState = GameOver;
+            }
             break;
 
         case Finish:
-
+            
             break;
 
         case GameOver:
             timer -= deltaTime;
             App->player->stateRace = GAME_OVER;
-
             if (timer <= 0.0f) {
                 timer = 99.0f;
-                App->audio->StopMusic(0.1f);
-                App->audio->StopFx();
+                App->audio->StopMusic(0.2f);
                 App->fade->FadeToBlack((Module*)App->sceneIntro, this, 0.1f);
                 App->player->Disable();
             }
@@ -367,7 +369,7 @@ update_status ModuleSceneBase::Update(float deltaTime) {
 void ModuleSceneBase::DrawRoad(float deltaTime) {
     while (camZ >= roadLength * segmentLength) {
         camZ -= roadLength * segmentLength;
-        stageNumber++;
+
     }
     while (camZ < 0) camZ += roadLength * segmentLength;
     float maxY = SCREEN_HEIGHT;
@@ -456,11 +458,11 @@ void ModuleSceneBase::DrawObjects(const Segment* s) {
         }
         
         if (scale <= 2.5f) {
-            App->renderer->Blit(textureObjects, destX - (sprite.w * scale)/2, (int)destY, &sprite, 0.0f, scale);
+            App->renderer->Blit(textureObjects, (int)destX - (int)(sprite.w * scale)/2, (int)destY, &sprite, 0.0f, scale);
         }     
         int initPos = (int)(camZ / segmentLength);
         if (s->collides && scale > 1 && App->player->stateRace == RUNNING) {
-            SDL_Rect collision = { destX - (sprite.w * scale) / 2, destY + sprite.h * scale,sprite.w * scale, -destH };
+            SDL_Rect collision = { (int)destX - (int)(sprite.w * scale) / 2, (int)destY + (int)(sprite.h * scale), (int)(sprite.w * scale), -(int)destH };
             App->player->Collision(collision);
         }
     }
@@ -489,7 +491,7 @@ void ModuleSceneBase::DrawEnemy(Enemy* e) {
         App->renderer->Blit(guiTexture, destX - (sprite.w * scale) / 2, (int)destY, &sprite, 0.0f, scale);
     }
     if (e->z > initPos + 1 && scale > 1 && App->player->stateRace == RUNNING) {
-        SDL_Rect collision = { destX - (sprite.w * scale) / 2, destY + sprite.h * scale,sprite.w * scale, -destH };
+        SDL_Rect collision = { (int)destX - (int)(sprite.w * scale) / 2, (int)destY + sprite.h * scale,sprite.w * scale, -destH };
         App->player->CollisionWithEnemy(collision);
     }
 
@@ -664,6 +666,14 @@ bool ModuleSceneBase::CleanUp() {
     App->textures->Unload(textureBackground);
     App->textures->Unload(guiTexture);
     App->textures->Unload(textureObjects);
+    for (int i = 0; i < enemies.size(); i++) {
+        delete enemies[i];
+        enemies[i] = nullptr;
+    }
+    for (int i = 0; i < segments.size(); i++) {
+        delete segments[i];
+        segments[i] = nullptr;
+    }
     return true;
 }
 

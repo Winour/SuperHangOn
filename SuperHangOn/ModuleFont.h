@@ -21,7 +21,7 @@ class ModuleFont : public Module{
 public:
     ModuleFont(bool start_enabled = true);
     ~ModuleFont();
-
+    bool CleanUp();
     bool Start();
 
     unsigned int LoadFont(const char* filePath, const char* style, int _width, int _heigth, int _initY = 0);

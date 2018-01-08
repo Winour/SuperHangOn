@@ -134,5 +134,8 @@ update_status ModuleSceneNewGame::Update(float deltaTime) {
 }
 
 bool ModuleSceneNewGame::CleanUp() {
+    App->textures->Unload(textureHangOnTitle);
+    App->textures->Unload(textureSegaLogo);
+    App->textures->Unload(textureOptions);
     return true;
 }

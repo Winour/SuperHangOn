@@ -13,6 +13,14 @@ ModuleFont::ModuleFont(bool start_enabled) : Module(start_enabled) {
 ModuleFont::~ModuleFont() {
 }
 
+bool ModuleFont :: CleanUp() {
+    for (int i = 0; i < fonts.size(); i++) {
+        App->textures->Unload(fonts[i].texture);
+    }
+    fonts.clear();
+    return true;
+}
+
 bool ModuleFont::Start() {
     countdownFont = LoadFont("fonts/numbers18x30.png", "9876543210", 18, 30);
     yellowFont = LoadFont("fonts/numbers18x18.png", "1234567890", 16, 18);

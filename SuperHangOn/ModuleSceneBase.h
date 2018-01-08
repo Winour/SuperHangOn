@@ -91,7 +91,6 @@ private: //Enemy
     Animation yellowRightThree;
 
     void DrawEnemy(Enemy* e);
-    void InvokeEnemy();
 
 protected: // Road
     SDL_Rect sky;
@@ -117,7 +116,7 @@ protected: // Road
     Animation semaphore;
 
 private: //Sounds
-    unsigned int semaphoreFX, semaphoreFinalFX, loadTrackFX, engineFX, outOfRoadFX, colisionFX, lapFX;
+    unsigned int semaphoreFX, semaphoreFinalFX, loadTrackFX, engineFX, outOfRoadFX, colisionFX, lapFX, finishFX;
 
 private: //Camera
     const float camDepth = CAMERA_DEPTH;
