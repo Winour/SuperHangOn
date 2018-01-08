@@ -7,7 +7,7 @@ Full project at github: [https://github.com/Winour/SuperHangOn](https://github.c
 
 Project webpage: [https://Winour.github.io/SuperHangOn/](https://Winour.github.io/SuperHangOn/) 
 
-Latest release (1.0): []()  
+Latest release (1.0): [https://github.com/Winour/SuperHangOn/releases/tag/1.0](https://github.com/Winour/SuperHangOn/releases/tag/1.0)  
 
 *Author*: Daniel Reyes
 
@@ -17,8 +17,8 @@ License: GNU GENERAL PUBLIC LICENSE
 
 ## Gameplay video
 
-<iframe width="560" height="315" src="" frameborder="0" allowfullscreen=""></iframe>
-You can watch it directly on [youtube]().
+<iframe width="560" height="315" src="https://www.youtube.com/watch?v=sMqVT6s0Bv4&feature=youtu.be" frameborder="0" allowfullscreen=""></iframe>
+You can watch it directly on [youtube](https://www.youtube.com/watch?v=sMqVT6s0Bv4&feature=youtu.be).
 
 ## Commands
 
