@@ -340,6 +340,8 @@ update_status ModulePlayer::Update(float deltaTime) {
         if (backToRoadTimer <= 0.0f) {
             stateRace = RUNNING;
             backToRoadTimer = -2.0f;
+            fastFall.Reset();
+            slowFall.Reset();
             fall = false;
         }
     }
@@ -414,7 +416,6 @@ void ModulePlayer::Collision(SDL_Rect object) {
     if (!(collider.x > object.x + object.w || collider.x + collider.w < object.x) ) {
         fall = true;
         stateRace = FALLING;
-        App->audio->PlayFx(colisionFX);
         backToRoadTimer = 2.0f;
     }
 }
@@ -423,7 +424,5 @@ void ModulePlayer::CollisionWithEnemy(SDL_Rect object) {
         speed /= speed;
         state = RIGHT_THREE;
         animChange = true;
-        App->audio->PlayFx(colisionFX, 1);
-
     }
 }

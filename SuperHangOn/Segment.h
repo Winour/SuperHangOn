@@ -12,10 +12,12 @@ public:
     unsigned int spriteID;
     float spriteX;
     bool collides = false;
+    bool smallItem = true;
 
     Segment() {
         wX = wY = wZ = sX = sY = sZ = scale = curve = cc = spriteX = 0.0f;
         collides = true;
+        smallItem = true;
         spriteID = 999;
     }
 

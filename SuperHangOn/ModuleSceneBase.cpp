@@ -171,7 +171,7 @@ bool ModuleSceneBase::Start() {
     stageNumber = 1;
     beamNumber = 3;
     timer = 5.0f;
-    countdown = 10.0f;
+    countdown = 480.0f;
     state = nextState = Intro;
     timerSemaphore = 0.0f;
     camY = 1500.0f;
@@ -205,7 +205,7 @@ bool ModuleSceneBase::Start() {
         e->x = 0.35f;
         e->z = 5;
         e->isYellow = false;
-        e->speed = 45.0f;
+        e->speed = 48.0f;
         e->currentAnimation = &greenStraight;
         enemies.push_back(e);
 
@@ -221,7 +221,7 @@ bool ModuleSceneBase::Start() {
         e->x = -0.65f;
         e->z = 4;
         e->isYellow = true;
-        e->speed = 50.0f;
+        e->speed = 52.0f;
         e->currentAnimation = &yellowStraight;
         enemies.push_back(e);
     } else {
@@ -270,34 +270,7 @@ bool ModuleSceneBase::Start() {
     semaphoreFinalFX = App->audio->LoadFx("music/fxSemaphoreFinal.wav");
     loadTrackFX = App->audio->LoadFx("music/fxLoadTrack.wav");
     lapFX = App->audio->LoadFx("music/fxLap.wav");
-    segments.clear();
-    for (int i = 0; i < 1000; i++) {
-        Segment* s = new Segment();
-        s->wZ = i * segmentLength;
-        s->wY = (i > 0) ? (segments[i - 1])->wY : 0;
-        if (i == 8) {
-            s->spriteID = startSignID;
-            s->spriteX = 0;
-            s->collides = false;
-        }
-        if (i < 200) {
-        } else if (i < 500) {
-            s->curve = -5.0f;
-        } else {
-            s->curve = 0.0f;
-        }
-
-        if (i > 20) {
-            //Hill(segments[i - 1], s, i, 50, 90);
-        }
-        if (i % 50 == 0) {
-            s->spriteID = 0;
-            s->spriteX = -2;
-        }
-                                                     // 15-60  /  70-130  GOOD VALUES
-        segments.push_back(s);  
-    }
-    roadLength = segments.size();
+    
     return true;
 }
 update_status ModuleSceneBase::Update(float deltaTime) {
@@ -471,6 +444,9 @@ void ModuleSceneBase::DrawObjects(const Segment* s) {
     if (s->spriteID != 999) {
         SDL_Rect sprite = objects[s->spriteID];
         float scale = s->sZ / SEGMENT_LENGTH;
+        if (s->smallItem) {
+            scale *= 0.75f;
+        }
         float destY = s->sY - sprite.h * scale;
         float destX = s->sX + (s->sZ * s->spriteX);
         int destH = (int)(sprite.h * scale);
@@ -478,6 +454,7 @@ void ModuleSceneBase::DrawObjects(const Segment* s) {
             float clipH = destY + destH - s->cc;
             sprite.h = (int)(sprite.h - sprite.h * clipH / destH);
         }
+        
         if (scale <= 2.5f) {
             App->renderer->Blit(textureObjects, destX - (sprite.w * scale)/2, (int)destY, &sprite, 0.0f, scale);
         }     
@@ -489,7 +466,15 @@ void ModuleSceneBase::DrawObjects(const Segment* s) {
     }
 }
 
-void ModuleSceneBase::DrawEnemy(const Enemy* e) { 
+void ModuleSceneBase::DrawEnemy(Enemy* e) { 
+    int initPos = (int)(camZ / segmentLength);
+    if (e->z < initPos - 200) {
+        e->z = initPos + 200;
+    }
+    if (e->z > initPos + 300) {
+
+        e->z = initPos - 150;
+    }
     Segment* s = segments[(int)e->z % roadLength];
     SDL_Rect sprite = e->currentAnimation->GetCurrentFrame();
     float scale = s->sZ / (SEGMENT_LENGTH + 90);
@@ -503,7 +488,6 @@ void ModuleSceneBase::DrawEnemy(const Enemy* e) {
     if (scale <= 1.5f) {
         App->renderer->Blit(guiTexture, destX - (sprite.w * scale) / 2, (int)destY, &sprite, 0.0f, scale);
     }
-    int initPos = (int)(camZ / segmentLength);
     if (e->z > initPos + 1 && scale > 1 && App->player->stateRace == RUNNING) {
         SDL_Rect collision = { destX - (sprite.w * scale) / 2, destY + sprite.h * scale,sprite.w * scale, -destH };
         App->player->CollisionWithEnemy(collision);
@@ -767,8 +751,8 @@ void ModuleSceneBase::SetUpColors() {
 void ModuleSceneBase::DrawBackground(float curve) {
     int i = (int)(camZ / segmentLength) + segmentsToDraw - 5;
     i = i%roadLength;
-    backgroundOffset -= curve * 1.5f;
-    mountainsOffset -= curve * 3.0f;
+    backgroundOffset -= curve * 1.5f * App->player->speed/MAX_SPEED;
+    mountainsOffset -= curve * 3.0f * App->player->speed / MAX_SPEED;
     App->renderer->Blit(textureBackground, backgroundOffset, segments[i]->sY - 260, &background, 0);
     App->renderer->Blit(textureBackground, -background.w + backgroundOffset, segments[i]->sY-260, &background, 0);
     App->renderer->Blit(textureBackground, background.w + backgroundOffset, segments[i]->sY-260, &background, 0);

@@ -8,8 +8,6 @@ public:
     ModuleSceneAfrica(bool active = true);
     ~ModuleSceneAfrica();
     bool Start();
-    
-public:
 
 };
 

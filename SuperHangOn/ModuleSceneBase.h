@@ -45,6 +45,9 @@ public:
     update_status Update(float deltaTime);
     bool CleanUp();
 
+protected:
+    void Hill(const Segment* a, Segment* b, float value, float length, float height);
+
 private:
     void DrawGUI();
     void DrawRoad(float deltaTime);
@@ -55,8 +58,6 @@ private:
     void WorldToScreen(Segment &s, bool b);
     void RecalculatePosition(float speed);
     void UpdateEnemy(Enemy* e, float deltaTime);
-
-    void Hill(const Segment* a, Segment* b, float value, float length, float height);
 
     void SetUpGUI();
     void SetUpColors();
@@ -89,9 +90,10 @@ private: //Enemy
     Animation yellowRightTwo;
     Animation yellowRightThree;
 
-    void DrawEnemy(const Enemy* e);
+    void DrawEnemy(Enemy* e);
+    void InvokeEnemy();
 
-private: // Road
+protected: // Road
     SDL_Rect sky;
     SDL_Texture* textureBackground = nullptr;
     SDL_Texture* textureObjects = nullptr;
@@ -100,7 +102,7 @@ private: // Road
     std::vector<Segment*> segments;
     const float roadWidth = ROAD_WIDTH;
     const float segmentLength = SEGMENT_LENGTH;
-    const int segmentsToDraw = 90;
+    const int segmentsToDraw = 125;
     float roadX;
     float roadY;
     float backgroundOffset;
@@ -110,6 +112,7 @@ private: // Road
     bool goal = false;
     SDL_Color roadColor, blueSky, white, greyDark, brownDark, brownLight;
     std::vector<SDL_Rect> objects;
+    std::vector<unsigned int> checkPoint;
     unsigned int bushID, signLeftID, signRightID, barrelID, bidalStoneID, rockID, startSignID, checkSignID, goalSignID, peopleID;
     Animation semaphore;
 
