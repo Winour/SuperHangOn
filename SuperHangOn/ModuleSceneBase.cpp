@@ -171,7 +171,7 @@ bool ModuleSceneBase::Start() {
     stageNumber = 1;
     beamNumber = 3;
     timer = 5.0f;
-    countdown = 480.0f;
+    countdown = 50.0f;
     state = nextState = Intro;
     timerSemaphore = 0.0f;
     camY = 1500.0f;
@@ -369,7 +369,10 @@ update_status ModuleSceneBase::Update(float deltaTime) {
 void ModuleSceneBase::DrawRoad(float deltaTime) {
     while (camZ >= roadLength * segmentLength) {
         camZ -= roadLength * segmentLength;
-
+    }
+    if (camZ >= stageNumber * segmentLength * 2000) {
+        stageNumber++;
+        countdown += 35.0f;
     }
     while (camZ < 0) camZ += roadLength * segmentLength;
     float maxY = SCREEN_HEIGHT;
@@ -741,6 +744,7 @@ void ModuleSceneBase::DrawGUI() {
     App->renderer->Blit(guiTexture, topPos.x, topPos.y, &top, 0);
     App->renderer->Blit(guiTexture, speedPos.x, speedPos.y, &speed, 0);
     App->renderer->Blit(guiTexture, kmPos.x, kmPos.y, &km, 0);
+    App->renderer->DrawQuad(SDL_Rect{ sgPos.x + 19, sgPos.y + 7, (int)(190 *  camZ / (12000 * segmentLength)), 5 }, 255, 249, 89, 255, false);
     App->renderer->Blit(guiTexture, sgPos.x, sgPos.y, &sg, 0);
     if (state == GameOver) {
         if ((int)(timer * 10) / 3 % 2 == 0) {
