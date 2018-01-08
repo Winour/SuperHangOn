@@ -101,11 +101,11 @@ private: // Road
     const float roadWidth = ROAD_WIDTH;
     const float segmentLength = SEGMENT_LENGTH;
     const int segmentsToDraw = 90;
-    float roadX = 0.0f;
-    float roadY = 0.0f;
-    float backgroundOffset = 0.0f;
-    float mountainsOffset = 0.0f;
-    unsigned int roadLength = 0;
+    float roadX;
+    float roadY;
+    float backgroundOffset;
+    float mountainsOffset;
+    unsigned int roadLength;
     unsigned int finishID;
     bool goal = false;
     SDL_Color roadColor, blueSky, white, greyDark, brownDark, brownLight;
@@ -118,10 +118,10 @@ private: //Sounds
 
 private: //Camera
     const float camDepth = CAMERA_DEPTH;
-    float camY = 1500.0f;
-    float camZ = 0.0f;
-    float wPosZ = 0.0f;
-    float offsetX = 0.0f;
+    float camY;
+    float camZ;
+    float wPosZ;
+    float offsetX;
 
 private: //GUI
     SDL_Texture* guiTexture;

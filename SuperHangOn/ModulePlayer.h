@@ -40,7 +40,7 @@ public:
 
 public:
     float speed;
-    float xPos = 0.0f;
+    float xPos;
     unsigned int score;
     bool outOfRoad = false;
     int stateRace;
@@ -77,8 +77,8 @@ private:
 
     int state;
     float timer, fallSpeed, backToRoadTimer, offsetToRoad;
-    bool animChange = false;
-    bool fall = false;
+    bool animChange;
+    bool fall;
 
     unsigned int engineFX;
     unsigned int outOfRoadFX;

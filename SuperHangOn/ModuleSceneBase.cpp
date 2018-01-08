@@ -157,6 +157,7 @@ ModuleSceneBase::ModuleSceneBase(bool active) : Module(active) {
 
 
 ModuleSceneBase::~ModuleSceneBase() {
+
 }
 
 bool ModuleSceneBase::Start() {
@@ -172,52 +173,103 @@ bool ModuleSceneBase::Start() {
     countdown = 5.0f;
     state = nextState = Intro;
     timerSemaphore = 0.0f;
+    camY = 1500.0f;
+    camZ = 0.0f;
+    wPosZ = 0.0f;
+    offsetX = 0.0f;
+    roadX = 0.0f;
+    roadY = 0.0f;
+    backgroundOffset = 0.0f;
+    mountainsOffset = 0.0f;
+    roadLength = 0;
 
-    Enemy* e = new Enemy;
-    e->x = 0.0f;
-    e->z = 6;
-    e->isYellow = true;
-    e->speed = 50.0f;  // = 200 player speed
-    e->currentAnimation = &yellowStraight;
-    enemies.push_back(e);
+    if (enemies.size() == 0) {
+        Enemy* e = new Enemy;
+        e->x = 0.0f;
+        e->z = 6;
+        e->isYellow = true;
+        e->speed = 50.0f;  // = 200 player speed
+        e->currentAnimation = &yellowStraight;
+        enemies.push_back(e);
 
-    e = new Enemy;
-    e->x = -0.35f;
-    e->z = 5;
-    e->isYellow = false;
-    e->speed = 50.0f;
-    e->currentAnimation = &greenStraight;
-    enemies.push_back(e);
+        e = new Enemy;
+        e->x = -0.35f;
+        e->z = 5;
+        e->isYellow = false;
+        e->speed = 50.0f;
+        e->currentAnimation = &greenStraight;
+        enemies.push_back(e);
 
-    e = new Enemy;
-    e->x = 0.35f;
-    e->z = 5;
-    e->isYellow = false;
-    e->speed = 50.0f;
-    e->currentAnimation = &greenStraight;
-    enemies.push_back(e);
+        e = new Enemy;
+        e->x = 0.35f;
+        e->z = 5;
+        e->isYellow = false;
+        e->speed = 50.0f;
+        e->currentAnimation = &greenStraight;
+        enemies.push_back(e);
 
-    e = new Enemy;
-    e->x = 0.65f;
-    e->z = 4;
-    e->isYellow = true;
-    e->speed = 50.0f;
-    e->currentAnimation = &yellowStraight;
-    enemies.push_back(e);
+        e = new Enemy;
+        e->x = 0.65f;
+        e->z = 4;
+        e->isYellow = true;
+        e->speed = 50.0f;
+        e->currentAnimation = &yellowStraight;
+        enemies.push_back(e);
 
-    e = new Enemy;
-    e->x = -0.65f;
-    e->z = 4;
-    e->isYellow = true;
-    e->speed = 50.0f;
-    e->currentAnimation = &yellowStraight;
-    enemies.push_back(e);
+        e = new Enemy;
+        e->x = -0.65f;
+        e->z = 4;
+        e->isYellow = true;
+        e->speed = 50.0f;
+        e->currentAnimation = &yellowStraight;
+        enemies.push_back(e);
+    } else {
+        enemies.clear();
+        Enemy* e = new Enemy;
+        e->x = 0.0f;
+        e->z = 6;
+        e->isYellow = true;
+        e->speed = 50.0f;  // = 200 player speed
+        e->currentAnimation = &yellowStraight;
+        enemies.push_back(e);
 
+        e = new Enemy;
+        e->x = -0.35f;
+        e->z = 5;
+        e->isYellow = false;
+        e->speed = 50.0f;
+        e->currentAnimation = &greenStraight;
+        enemies.push_back(e);
+
+        e = new Enemy;
+        e->x = 0.35f;
+        e->z = 5;
+        e->isYellow = false;
+        e->speed = 50.0f;
+        e->currentAnimation = &greenStraight;
+        enemies.push_back(e);
+
+        e = new Enemy;
+        e->x = 0.65f;
+        e->z = 4;
+        e->isYellow = true;
+        e->speed = 50.0f;
+        e->currentAnimation = &yellowStraight;
+        enemies.push_back(e);
+
+        e = new Enemy;
+        e->x = -0.65f;
+        e->z = 4;
+        e->isYellow = true;
+        e->speed = 50.0f;
+        e->currentAnimation = &yellowStraight;
+        enemies.push_back(e);
+    }
     semaphoreFX = App->audio->LoadFx("music/fxSemaphoreOne.wav");
     semaphoreFinalFX = App->audio->LoadFx("music/fxSemaphoreFinal.wav");
     loadTrackFX = App->audio->LoadFx("music/fxLoadTrack.wav");
     lapFX = App->audio->LoadFx("music/fxLap.wav");
-
+    segments.clear();
     for (int i = 0; i < 1000; i++) {
         Segment* s = new Segment();
         s->wZ = i * segmentLength;
@@ -430,7 +482,6 @@ void ModuleSceneBase::DrawObjects(const Segment* s) {
         int initPos = (int)(camZ / segmentLength);
         if (s->collides && scale > 1 && App->player->stateRace == RUNNING) {
             SDL_Rect collision = { destX - (sprite.w * scale) / 2, destY + sprite.h * scale,sprite.w * scale, -destH };
-            App->renderer->DrawQuad(collision, 255, 0, 0, 100, false);
             App->player->Collision(collision);
         }
     }
@@ -453,7 +504,6 @@ void ModuleSceneBase::DrawEnemy(const Enemy* e) {
     int initPos = (int)(camZ / segmentLength);
     if (e->z > initPos + 1 && scale > 1 && App->player->stateRace == RUNNING) {
         SDL_Rect collision = { destX - (sprite.w * scale) / 2, destY + sprite.h * scale,sprite.w * scale, -destH };
-        App->renderer->DrawQuad(collision, 255, 0, 0, 100, false);
         App->player->Collision(collision);
     }
 

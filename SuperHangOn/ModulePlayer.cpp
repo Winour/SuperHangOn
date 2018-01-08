@@ -141,6 +141,7 @@ ModulePlayer::~ModulePlayer() {
 bool ModulePlayer::Start() {
     timer = speed = xPos = 0.0f;
     state = score = stateRace = 0;
+    animChange = fall = false;
     texture = App->textures->Load("sprites/map&players.png");
     textureFalls = App->textures->Load("sprites/falls.png");
     engineFX = App->audio->LoadFx("music/fxEngine.wav");
@@ -402,7 +403,6 @@ void ModulePlayer::RecalculateAnimSpeed() {
 }
 
 void ModulePlayer::Collision(SDL_Rect object) {
-    App->renderer->DrawQuad(collider, 0, 0, 255, 100, false);
     if (!(collider.x > object.x + object.w || collider.x + collider.w < object.x) ) {
         fall = true;
         stateRace = FALLING;
